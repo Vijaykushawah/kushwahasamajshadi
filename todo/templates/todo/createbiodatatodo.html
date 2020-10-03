@@ -12,7 +12,7 @@
 <h2 class="p-3 mb-2 bg-danger text-white">{{error}}</h2>{% endif %}
 <form method="POST" enctype="multipart/form-data" class="table thead-dark">
   {% csrf_token %}
-{{form.as_table}}
+{{form.as_ul}}
 <button type="submit" class="btn btn-success">CREATE</button>
 </form>
 </div></div></div></div>

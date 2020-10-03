@@ -16,6 +16,7 @@ from googletrans import Translator
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 # Create your views here.
 logger = logging.getLogger(__name__)
 def signupuser(request):
@@ -440,7 +441,7 @@ def loginuser(request):
             return render(request,'todo/loginuser.html',{'form':AuthenticationForm(),'error':"Username and Password do not match"})
         else:
             login(request,user)
-            return redirect(currenttodos)
+            return redirect(mybiodatahometodo)
 
 
 
@@ -552,10 +553,11 @@ def createbiodatatodo(request):
             if form.is_valid():
                 newtodo.save()
                 todos = MyBiodata.objects.filter(user=request.user,deletedrow=False).order_by('-id')
+                logger.error(todos[0].id)
                 privacymodel=BiodataPrivacy()
                 privacymodel.user=request.user
                 privacymodel.username=request.user.username
-                privacymodel.bioid=todos[0].id
+                privacymodel.biodataid=todos[0].id
                 privacymodel.save()
                 return render(request,'todo/mybiodatatodos.html',{'todos':todos,'msg':'BIODATA Created Successfully.'})
             else:
@@ -581,6 +583,18 @@ def viewmybiodatatodo(request,todo_pk):
             return render(request,'todo/mybiodatatodos.html',{'todos':todos,'msg':'BIODATA updated Successfully.'})
         except ValueError:
             return render(request,'todo/viewmybiodatatodo.html',{'todo':todo,'form':form,'error':"Bad info passed.Please try again."})
+@login_required
+def mybiodatahometodo(request):
+    user_list = MyBiodata.objects.filter(deletedrow=False).order_by('-id')
+    page = request.GET.get('page', 1)
+    paginator = Paginator(user_list, 3)
+    try:
+        todos = paginator.page(page)
+    except PageNotAnInteger:
+        todos = paginator.page(1)
+    except EmptyPage:
+        todos = paginator.page(paginator.num_pages)
+    return render(request,'todo/mybiodatahometodo.html',{'todos':todos})
 
 @login_required
 def mybiodatadeletetodo(request,todo_pk):
@@ -611,6 +625,13 @@ def mybiodataprivacytodo(request):
             todo.address_detail_visibility=request.POST['address_detail_visibility']
             todo.hide_profile=request.POST['hide_profile']
             todo.save()
+            todo1=get_object_or_404(MyBiodata,pk=request.POST['biodataid'],user=request.user)
+            todo1.contact_visibility=request.POST['contact_visibility']
+            todo1.email_visibility=request.POST['email_visibility']
+            todo1.education_detail_visibility=request.POST['education_detail_visibility']
+            todo1.address_detail_visibility=request.POST['address_detail_visibility']
+            todo1.hide_profile=request.POST['hide_profile']
+            todo1.save()
             return render(request,'todo/mybiodataprivacytodo.html',{'form':BiodataPrivacyForm(),'msg':'Privacy updated Successfully.'})
         except :
             return render(request,'todo/mybiodataprivacytodo.html',{'form':BiodataPrivacyForm(),'error':"Incorrect biodataID ! Please try again."})

@@ -170,6 +170,15 @@ class MyBiodata(models.Model):
         Yes = 'Yes'
         No = 'No'
         Not_Specified='Not_Specified'
+    class Contact(models.TextChoices):
+        Visible_To_All='Visible_To_All'
+        Visible_To_ME='Visible_To_ME'
+        Hidden='Hidden'
+        Not_Specified='Not_Specified'
+    class HideBiodata(models.TextChoices):
+        Hidden='Hidden'
+        Show='Show'
+        Not_Specified='Not_Specified'
 
 
 
@@ -213,5 +222,11 @@ class MyBiodata(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     last_updated_at = models.DateTimeField(null=True)
     deletedrow=models.BooleanField(default=False)
+    # permissions
+    contact_visibility = models.CharField(choices=Contact.choices,max_length=20,default=Contact.Visible_To_ME)
+    email_visibility = models.CharField(choices=Contact.choices,max_length=20,default=Contact.Visible_To_ME)
+    education_detail_visibility =models.CharField(choices=Contact.choices,max_length=20,default=Contact.Visible_To_All)
+    address_detail_visibility=models.CharField(choices=Contact.choices,max_length=20,default=Contact.Visible_To_All)
+    hide_profile =models.CharField(choices=HideBiodata.choices,max_length=20,default=HideBiodata.Show)
     def __str__(self):
         return self.username

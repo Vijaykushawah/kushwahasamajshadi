@@ -19,12 +19,14 @@ MAIN MENU
 
             </div>
             <div style="overflow-y: scroll; height:400px;" class="modal-body bg-secondary">
-              <h5> <a class="nav-link bg-success" href="{% url 'createtodo'  %}">CREATE TASK</a>
+              <h5> <a class="nav-link bg-success" href="{% url 'mybiodatahometodo'  %}">SEARCH PARTNER</a>
+                <a class="nav-link bg-success" href="{% url 'createtodo'  %}">CREATE TASK</a>
     <a class="nav-link bg-success" href="{% url 'currenttodos'  %}">PEDING TASKS</a>
     <a class="nav-link bg-success" href="{% url 'completedtodos'  %}">COMPLETED TASKS</a>
-    <a class="nav-link bg-success" href="{% url 'createtodo'  %}">CREATE BIODATA</a>
-<a class="nav-link bg-success" href="{% url 'currenttodos'  %}">UPDATE BIODATA</a>
-<a class="nav-link bg-success" href="{% url 'completedtodos'  %}">DELETE BIODATA</a>
+    <a class="nav-link bg-success" href="{% url 'createbiodatatodo'  %}">CREATE BIODATA</a>
+<a class="nav-link bg-success" href="{% url 'mybiodatatodo'  %}">UPDATE BIODATA</a>
+<a class="nav-link bg-success" href="{% url 'mybiodataprivacytodo'  %}">CHANGE BIODATA PRIVACY</a>
+<a class="nav-link bg-success" href="{% url 'mybiodatadownloadtodo'  %}">DOWNLOAD BIODATA </a>
     <a class="nav-link bg-success" href="{% url 'portfoliotodo'  %}">PORTFOLIO</a>
     <a class="nav-link bg-success" href="{% url 'translatortodo' %}">LANGUAGE TRANSLATOR</a>
     <a class="nav-link bg-success" href="{% url 'passwordgeneratortodo' %}">PASSWORD GENERATOR</a>
