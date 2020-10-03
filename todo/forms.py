@@ -23,4 +23,11 @@ class SendMultiMailForm(ModelForm):
 class MyBiodataForm(ModelForm):
     class Meta:
         model=MyBiodata
-        fields = '__all__'
+        fields = {'name','age','height','body_Type','complexion','mother_Toung',
+        'social','religion','cast','education','profession','profession_type','job_location','annual_Income',
+        'father_name','father_occupation','mother_name','mother_occupation','family_details','about',
+        'contact_number','contact_privacy','email_ID','place','photo'}
+    field_order=['name','age','height','body_Type','complexion','mother_Toung',
+        'social','religion','cast','education','profession','profession_type','job_location','annual_Income',
+        'father_name','father_occupation','mother_name','mother_occupation','family_details','about',
+        'contact_number','contact_privacy','email_ID','place','photo']
