@@ -144,6 +144,10 @@ class MyBiodata(models.Model):
         Doctor='do'
         others='ot'
         Not_Specified='ns'
+    class Gender(models.TextChoices):
+        Female = 'fe'
+        Male = 'ma'
+        Not_Specified='ns'
 
 
 
@@ -153,6 +157,8 @@ class MyBiodata(models.Model):
     age = models.PositiveIntegerField(default=22, validators=[MinValueValidator(18), MaxValueValidator(100)])
     created_by = models.CharField(choices=CreatedBy.choices,max_length=2,default=CreatedBy.Not_Specified)
     marital_Status = models.CharField(choices=Marital.choices,max_length=2,default=Marital.Not_Specified)
+    gender = models.CharField(choices=Gender.choices,max_length=2,default=Gender.Not_Specified)
+    hobbies = models.CharField(max_length=400,blank=True)
     mother_Toung = models.CharField(choices=MotherToung.choices,max_length=2,default=MotherToung.Hindi)
     social = models.CharField(choices=Social.choices,max_length=2,default=Social.Not_Specified)
     body_Type = models.CharField(choices=BodyType.choices,max_length=2,default=BodyType.Average)

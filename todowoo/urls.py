@@ -56,8 +56,9 @@ urlpatterns = [
     path('sendmail/',views.sendmailtodo,name='sendmailtodo'),
     path('passwordgenerator/',views.passwordgeneratortodo,name='passwordgeneratortodo'),
     path('createbiodata/',views.createbiodatatodo,name='createbiodatatodo'),
+    path('mybiodata/',views.mybiodatatodo,name='mybiodatatodo'),
 
 ]
-if settings.DEBUG: 
+if settings.DEBUG:
         urlpatterns += static(settings.MEDIA_URL,
                               document_root=settings.MEDIA_ROOT)

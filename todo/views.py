@@ -551,12 +551,16 @@ def createbiodatatodo(request):
 
             if form.is_valid():
                 newtodo.save()
-                return redirect(currenttodos)
+                return redirect(mybiodatatodo)
             else:
                 return render(request,'todo/createbiodatatodo.html',{'form':MyBiodataForm(),'error':"Bad data Passed!Please Try again."})
         except ValueError:
             return render(request,'todo/createtodo.html',{'form':MyBiodataForm(),'error':"Bad data Passed! Try again."})
 
+@login_required
+def mybiodatatodo(request):
+    todos = MyBiodata.objects.filter(user=request.user)
+    return render(request,'todo/mybiodatatodos.html',{'todos':todos})
 @login_required
 def createtodo(request):
     if request.method == 'GET':
