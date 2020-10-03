@@ -1,0 +1,285 @@
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <link rel="stylesheet" href="http://fortawesome.github.io/Font-Awesome/assets/font-awesome/css/font-awesome.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+ <meta http-equiv="X-UA-Compatible" content="IE=edge">
+ <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+ <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+{% load static %}
+<script type="text/javascript" scr="{% static 'todo/js/main.js' %}">
+</script><script>
+   function CheckChecked()
+   {
+
+   $('#MyPopup').modal('hide');
+
+   }
+  $(document).ready(function(){
+  $("select.fromlangselect,select.tolangselect,textarea#fromlangtext").change(function(){
+    var fromlangval = $(this).children("option:selected").val();
+    var tolangval = $("select.tolangselect").children("option:selected").val();
+    var lefttext=$('textarea#fromlangtext').val();
+    var righttext=$('textarea#tolangtext').val();
+$.ajax({
+url:'{% url 'translatetodo' %}',
+type:'POST',
+dataType: 'json',
+data:{
+    'fromlangval':fromlangval,
+    'tolangval':tolangval,
+    'lefttext':lefttext,
+    'resulttype':'actualtext',
+    'righttext':righttext,
+    'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function( data )
+   {
+         $('textarea#tolangtext').val(data.result);
+         $('.detectedlang').val(data.langdetected);
+
+       }
+});
+  });
+ // alert('jquery supported')
+  });
+$(document).ready(function(){
+  $('.convertlang,.getpronunciation').click(function(){
+    var fromlangval = $("select.fromlangselect").children("option:selected").val();
+    var tolangval = $("select.tolangselect").children("option:selected").val();
+    var lefttext=$('textarea#fromlangtext').val();
+    var righttext=$('textarea#tolangtext').val();
+    var check=$(this).attr('id');
+    if (check == 'convertlang'){
+      var resulttype='actualtext';
+    }else{
+      var resulttype='pronunciation';
+   }
+
+  $.ajax({
+  url:'{% url 'translatetodo' %}',
+  type:'POST',
+  dataType: 'json',
+  data:{
+    'fromlangval':fromlangval,
+    'tolangval':tolangval,
+    'lefttext':lefttext,
+    'resulttype':resulttype,
+    'righttext':righttext,
+    'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function( data )
+       {
+         $('textarea#tolangtext').val(data.result);
+         $('.detectedlang').val(data.langdetected);
+       }
+  });
+});
+});
+$(document).ready(function(){
+  $("textarea#fromlangtext").on('change keyup paste', function() {
+    var fromlangval = $("select.fromlangselect").children("option:selected").val();
+    var tolangval = $("select.tolangselect").children("option:selected").val();
+    var lefttext=$('textarea#fromlangtext').val();
+    var righttext=$('textarea#tolangtext').val();
+    var resulttype='actualtext';
+  $.ajax({
+  url:'{% url 'translatetodo' %}',
+  type:'POST',
+  dataType: 'json',
+  data:{
+    'fromlangval':fromlangval,
+    'tolangval':tolangval,
+    'lefttext':lefttext,
+    'resulttype':resulttype,
+    'righttext':righttext,
+    'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function( data )
+       {
+         $('textarea#tolangtext').val(data.result);
+         $('.detectedlang').html(data.langdetected);
+       }
+  });
+  });
+
+});
+
+
+$(document).ready(function(){
+  $('.crossdata').click(function(){
+    alert('button clicked');
+
+  $.ajax({
+  url:'http://vijaykushawah.pythonanywhere.com/getdemo',
+  type:'POST',
+  data:{
+    'demo':'demo1',
+    'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  crossDomain: true,
+  success: function( data )
+       {
+         data=JSON.parse(JSON.stringify(data));
+         alert('success');
+         console.log(data);
+         var html_to_append = '';
+         $('#img1').attr('src','http://vijaykushawah.pythonanywhere.com/media/portfolio/images/anony.PNG');
+         alert(data.status);
+       },
+  error: function( data )
+        {
+          alert('error');
+          alert(data);
+        }
+  });
+});
+});
+
+
+<!-- scroll button added -->
+
+// When the user clicks on the button, scroll to the top of the document
+function topFunction() {
+  document.body.scrollTop = 0;
+  document.documentElement.scrollTop = 0;
+}
+ </script>
+
+
+  <link rel="icon" type="image/png" href="{% static 'todo/todo.png' %}" sizes="96x96">
+ <link rel="stylesheet" type="text/css" href="{% static 'todo/css/main.css' %}">
+
+<!-- navbar -->
+ <nav class="navbar navbar-expand-lg  ">
+ <a class="navbar-brand " href="{% url 'home' %}"><img src="{% static 'todo/logo.PNG' %}" width="35%" height="61px">&nbsp &nbsp  <b clss="nav-link">KUSHWAHA SAMAJ SHADI</b></a>
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+ <span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse " id="navbarSupportedContent">     <ul class="nav navbar-nav mr-4">
+ <li class="nav-item">
+     <a class="nav-link" data-value="about" href="{% url 'abouttodo' %}">ABOUT</a>        </li>
+<li class="nav-item">
+    <a class="nav-link " data-value="portfolio"href="{% url 'portfoliotodo' %}">PORTFOLIO</a>
+ </li>
+ <li class="nav-item dropdown">
+     <a class="nav-link dropdown-toggle" data-toggle="dropdown" data-value="portfolio" href="#">TOOLS</a>
+     <ul class="dropdown-menu">
+                    <a href="{% url 'translatortodo' %}" class="dropdown-item">LANGUAGE TRANSLATOR</a>
+                  <a href="{% url 'passwordgeneratortodo' %}" class="dropdown-item">PASSWORD GENERATOR</a>
+                </ul>
+  </li>
+  <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" data-toggle="dropdown" data-value="portfolio" href="#">MANAGE BIODATA</a>
+      <ul class="dropdown-menu">
+                     <a href="{% url 'createbiodatatodo' %}" class="dropdown-item">CREATE BIODATA</a>
+                   <a href="{% url 'currenttodos' %}" class="dropdown-item">UPDATE BIODATA</a>
+                   <a href="{% url 'completedtodos' %}" class="dropdown-item">DELETE BIODATA</a>
+                 </ul>
+   </li>
+
+ {% if user.is_authenticated %}
+
+ <li class="nav-item dropdown">
+     <a class="nav-link dropdown-toggle" data-toggle="dropdown" data-value="portfolio" href="#">TASK MANAGEMENT</a>
+     <ul class="dropdown-menu">
+                    <a href="{% url 'createtodo' %}" class="dropdown-item">CREATE TASK</a>
+                  <a href="{% url 'currenttodos' %}" class="dropdown-item">PENDING TASKS</a>
+                  <a href="{% url 'completedtodos' %}" class="dropdown-item">COMPLETED TASKS</a>
+                </ul>
+  </li>
+
+
+  <li class="nav-item "><a class="nav-link " data-value="blog" href="{% url 'myprofiletodo' %}">HELLO {{user.username}}</a></li>
+ <li class="nav-item">
+  <a class="nav-link " data-value="contact" href="{% url 'completedtodos' %}"><form  action="{% url 'logoutuser' %}" method="POST">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-success">LOGOUT</button>
+  </form></a>       </li>
+</ul>
+
+ <!--
+ <a href="{% url 'createtodo' %}">Create</a>
+ <a href="{% url 'currenttodos' %}">Current</a>
+ <a href="{% url 'completedtodos' %}">Completed</a>
+ <form  action="{% url 'logoutuser' %}" method="POST">
+   {% csrf_token %}
+   <button type="submit">Logout</button>
+ </form> -->
+
+ {% else %}
+
+ <li class="nav-item">
+    <a class="nav-link " data-value="blog" href="{% url 'signupuser' %}">SIGN UP</a>         </li>
+ <li class="nav-item">
+   <a class="nav-link " data-value="team" href="{% url 'loginuser' %}">LOGIN</a>       </li>
+ <li class="nav-item">
+ <a class="nav-link " data-value="contact" href="{% url 'contacttodo' %}">CONTACT</a>       </li>
+ </ul>
+
+ <!-- <a href="{% url 'signupuser' %}">Sign Up</a>
+ <a href="{% url 'loginuser' %}">Login</a> -->
+
+ {% endif %}
+ <!-- <li class="nav-item">
+    <a class="nav-link " data-value="blog" href="#">Blog</a>         </li>
+<li class="nav-item">
+   <a class="nav-link " data-value="team" href="#">         Team</a>       </li>
+<li class="nav-item">
+ <a class="nav-link " data-value="contact" href="#">Contact</a>       </li>
+</ul> -->
+</div></nav>
+
+
+
+
+<!-- {% if user.is_authenticated %}
+
+Logged in as {{user.username}}
+<a href="{% url 'createtodo' %}">Create</a>
+<a href="{% url 'currenttodos' %}">Current</a>
+<a href="{% url 'completedtodos' %}">Completed</a>
+<form  action="{% url 'logoutuser' %}" method="POST">
+  {% csrf_token %}
+  <button type="submit">Logout</button>
+</form>
+
+{% else %}
+<a href="{% url 'signupuser' %}">Sign Up</a>
+<a href="{% url 'loginuser' %}">Login</a>
+
+{% endif %} -->
+
+<div class="content overflow-auto" id="content" style="background-image: url('{% static 'todo/background2.jpg' %}');background-attachment: fixed;
+ background-size: cover;
+ background-position: center;">
+
+
+
+{% block content %}{% endblock %}
+</div>
+<style>.scrolltop1 {
+  display: block;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  font-size: 15px;
+  border: none;
+  outline: none;
+  color: white;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 2px;
+}
+
+.scrolltop1:hover {
+  background-color: #555;
+}</style>
+<button onclick="topFunction()" id="scrolltop1" class="scrolltop1 fa fa-chevron-up shape main-bg new-angle " title="Go to top"></button>
+<!--  Slider add -->
+
+
+{% include 'todo/slidershow2.html' %}
+
+{% include 'todo/footer.html' %}
