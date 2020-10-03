@@ -23,12 +23,14 @@
      </div>
      <div class="col-lg-6 col-md-6 col-sm-6 ">
 
-      <h3 class="text-primary justify-content-center">{{todo.name}}
-<button class="btn btn-outline-secondary btn-sm bg-success "><a target="_blank" style="text-decoration:none;color:#ffffff;" href="{% url 'viewmybiodatatodo' todo.id %}">EDIT</a></button>
-<form method="POST" action="{% url 'mybiodatadeletetodo' todo.id %}">
+      <h3 class="text-primary justify-content-center">Biodata ID:{{todo.id}}<table>
+
+      <tr><td>
+<button class="btn btn-outline-secondary  bg-success "><a target="_blank" style="text-decoration:none;color:#ffffff;" href="{% url 'viewmybiodatatodo' todo.id %}">EDIT</a></button>
+</td><td><form method="POST" action="{% url 'mybiodatadeletetodo' todo.id %}">
   {% csrf_token %}
-<button type="submit" class="btn btn-danger">DELETE</button>
-</form>
+<button type="submit" class="btn btn-danger">DELETE</button></td>
+</form></tr></table>
       </h3>
 
         <table style="max-width:80%;background:white;" class=" table-responsive table-hover">
@@ -215,8 +217,7 @@
     </div>
   {% endfor %}
 
-   <button class="btn btn-outline-secondary btn-lg bg-info "><a target="_blank" style="text-decoration:none;color:#ffffff;" href="{% url 'exportdatatodo' %}">Export CSV</a></button>
-   <button class="btn btn-outline-secondary btn-lg bg-info "><a target="_blank" style="text-decoration:none;color:#ffffff;" href="{% url 'exportexceldatatodo' %}">Export EXCEL</a></button>
+
 
   </div></div></div></div>
 {% endblock %}

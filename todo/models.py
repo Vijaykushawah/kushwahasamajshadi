@@ -44,7 +44,24 @@ class SendMultiMail(models.Model):
     schedule = models.DateTimeField(null=True)
 
 
-
+class BiodataPrivacy(models.Model):
+    class Contact(models.TextChoices):
+        Visible_To_All='Visible_To_All'
+        Visible_To_ME='Visible_To_ME'
+        Hidden='Hidden'
+        Not_Specified='Not_Specified'
+    class HideBiodata(models.TextChoices):
+        Hidden='Hidden'
+        Show='Show'
+        Not_Specified='Not_Specified'
+    user = models.ForeignKey(User,on_delete=models.CASCADE,null=True)
+    username = models.CharField(max_length=100,blank=True)
+    biodataid = models.CharField(max_length=100,default='1')
+    contact_visibility = models.CharField(choices=Contact.choices,max_length=20,default=Contact.Visible_To_ME)
+    email_visibility = models.CharField(choices=Contact.choices,max_length=20,default=Contact.Visible_To_ME)
+    education_detail_visibility =models.CharField(choices=Contact.choices,max_length=20,default=Contact.Visible_To_All)
+    address_detail_visibility=models.CharField(choices=Contact.choices,max_length=20,default=Contact.Visible_To_All)
+    hide_profile =models.CharField(choices=HideBiodata.choices,max_length=20,default=HideBiodata.Show)
 
 
 class MyBiodata(models.Model):

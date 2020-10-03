@@ -3,8 +3,8 @@ from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.contrib.auth import login,logout,authenticate
-from .forms import TodoForm,ContactForm,MyProfileForm,SendMultiMailForm,MyBiodataForm
-from .models import Todo,Contact,MyProfile,SendMultiMail,MyBiodata
+from .forms import TodoForm,ContactForm,MyProfileForm,SendMultiMailForm,MyBiodataForm,BiodataPrivacyForm
+from .models import Todo,Contact,MyProfile,SendMultiMail,MyBiodata,BiodataPrivacy
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
@@ -551,7 +551,12 @@ def createbiodatatodo(request):
 
             if form.is_valid():
                 newtodo.save()
-                todos = MyBiodata.objects.filter(user=request.user).order_by('-id')
+                todos = MyBiodata.objects.filter(user=request.user,deletedrow=False).order_by('-id')
+                privacymodel=BiodataPrivacy()
+                privacymodel.user=request.user
+                privacymodel.username=request.user.username
+                privacymodel.bioid=todos[0].id
+                privacymodel.save()
                 return render(request,'todo/mybiodatatodos.html',{'todos':todos,'msg':'BIODATA Created Successfully.'})
             else:
                 return render(request,'todo/createbiodatatodo.html',{'form':MyBiodataForm(),'error':"Bad data Passed!Please Try again."})
@@ -593,7 +598,34 @@ def mybiodatadeletetodo(request,todo_pk):
         except ValueError:
             return render(request,'todo/viewmybiodatatodo.html',{'todo':todo,'form':form,'error':"Bad info passed.Please try again."})
 
+@login_required
+def mybiodataprivacytodo(request):
+    if request.method == 'GET':
+        return render(request,'todo/mybiodataprivacytodo.html',{'form':BiodataPrivacyForm()})
+    else:
+        try:
+            todo=get_object_or_404(BiodataPrivacy,biodataid=request.POST['biodataid'],user=request.user)
+            todo.contact_visibility=request.POST['contact_visibility']
+            todo.email_visibility=request.POST['email_visibility']
+            todo.education_detail_visibility=request.POST['education_detail_visibility']
+            todo.address_detail_visibility=request.POST['address_detail_visibility']
+            todo.hide_profile=request.POST['hide_profile']
+            todo.save()
+            return render(request,'todo/mybiodataprivacytodo.html',{'form':BiodataPrivacyForm(),'msg':'Privacy updated Successfully.'})
+        except :
+            return render(request,'todo/mybiodataprivacytodo.html',{'form':BiodataPrivacyForm(),'error':"Incorrect biodataID ! Please try again."})
 
+@login_required
+def mybiodatadownloadtodo(request):
+    if request.method == 'GET':
+        return render(request,'todo/mybiodatadownloadtodo.html',{'msg':'PLEASE ENTER YOUR BIODATA ID'})
+    else:
+        try:
+            todo=get_object_or_404(MyBiodata,pk=request.POST['biodataid'],user=request.user,deletedrow=False)
+            logger.error(todo.id)
+            return render(request,'todo/mybiodatadownloadtodo.html',{'todo':todo,'found':'found'})
+        except :
+            return render(request,'todo/mybiodatadownloadtodo.html',{'error':"It's not your biodata ID, Please try again."})
 
 
 

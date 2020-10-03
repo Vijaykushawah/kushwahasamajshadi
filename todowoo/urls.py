@@ -59,6 +59,8 @@ urlpatterns = [
     path('mybiodata/',views.mybiodatatodo,name='mybiodatatodo'),
     path('mybiodata/<int:todo_pk>',views.viewmybiodatatodo,name='viewmybiodatatodo'),
     path('mybiodata/<int:todo_pk>/delete',views.mybiodatadeletetodo,name='mybiodatadeletetodo'),
+    path('mybiodataprivacy/',views.mybiodataprivacytodo,name='mybiodataprivacytodo'),
+    path('mybiodatadownload/',views.mybiodatadownloadtodo,name='mybiodatadownloadtodo'),
 
 ]
 if settings.DEBUG:

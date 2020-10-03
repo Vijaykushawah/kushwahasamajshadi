@@ -136,6 +136,36 @@ $(document).ready(function(){
   });
 });
 });
+<!-- download biodata -->
+$(document).ready(function(){
+  $('.downloadbiodatabtn').click(function(){
+alert('BIODATA is ready');
+
+var HTML_Width = $(".html-content").width();
+    var HTML_Height = $(".html-content").height();
+    var top_left_margin = 35;
+    var PDF_Width = HTML_Width + (top_left_margin * 1);
+    var PDF_Height = (PDF_Width * 1) + (top_left_margin * 1);
+    var canvas_image_width = HTML_Width;
+    var canvas_image_height = HTML_Height;
+
+    var totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
+
+    html2canvas($(".html-content")[0]).then(function (canvas) {
+        var imgData = canvas.toDataURL("image/jpeg", 1.0);
+        var pdf = new jsPDF('p', 'pt', [PDF_Width/2, PDF_Height]);
+        pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
+        for (var i = 1; i <= totalPDFPages; i++) {
+            pdf.addPage(PDF_Width, PDF_Height);
+            pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height*i)+(top_left_margin*10),canvas_image_width*5,canvas_image_height);
+        }
+        pdf.save("mybiodata_by_vijay.pdf");
+        $(".html-content").hide();
+        $(".downloadbiodata").hide();
+    });
+
+  });
+});
 
 
 <!-- scroll button added -->
@@ -175,7 +205,8 @@ function topFunction() {
       <ul class="dropdown-menu">
                      <a href="{% url 'createbiodatatodo' %}" class="dropdown-item">CREATE BIODATA</a>
                    <a href="{% url 'mybiodatatodo' %}" class="dropdown-item">UPDATE BIODATA</a>
-                   <a href="{% url 'completedtodos' %}" class="dropdown-item">DELETE BIODATA</a>
+                   <a href="{% url 'mybiodataprivacytodo' %}" class="dropdown-item">BIODATA PRIVACY</a>
+                   <a href="{% url 'mybiodatadownloadtodo' %}" class="dropdown-item">DOWNLOAD MY BIODATA </a>
                  </ul>
    </li>
 
