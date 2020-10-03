@@ -10,7 +10,7 @@
 <h5 class="text-primary">CREATE BIODATA</h5>
 {% if error %}
 <h2 class="p-3 mb-2 bg-danger text-white">{{error}}</h2>{% endif %}
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
   {% csrf_token %}
 {{form.as_table}}
 <button type="submit" class="btn btn-success">CREATE</button>

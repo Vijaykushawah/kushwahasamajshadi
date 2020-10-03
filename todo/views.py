@@ -3,8 +3,8 @@ from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.contrib.auth import login,logout,authenticate
-from .forms import TodoForm,ContactForm,MyProfileForm,SendMultiMailForm
-from .models import Todo,Contact,MyProfile,SendMultiMail
+from .forms import TodoForm,ContactForm,MyProfileForm,SendMultiMailForm,MyBiodataForm
+from .models import Todo,Contact,MyProfile,SendMultiMail,MyBiodata
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
@@ -541,10 +541,9 @@ def contacttodos(request):
 @login_required
 def createbiodatatodo(request):
     if request.method == 'GET':
-        return render(request,'todo/createbiodatatodo.html',{'form':TodoForm()})
+        return render(request,'todo/createbiodatatodo.html',{'form':MyBiodataForm()})
     else:
-        form=TodoForm(request.POST)
-        logger.error(request.POST['disability'])
+        form=MyBiodataForm(request.POST, request.FILES)
         newtodo = form.save(commit=False)
         newtodo.user = request.user
         newtodo.username = request.user.username
@@ -554,9 +553,9 @@ def createbiodatatodo(request):
                 newtodo.save()
                 return redirect(currenttodos)
             else:
-                return render(request,'todo/createbiodatatodo.html',{'form':TodoForm(),'error':"Bad data Passed!Please Try again."})
+                return render(request,'todo/createbiodatatodo.html',{'form':MyBiodataForm(),'error':"Bad data Passed!Please Try again."})
         except ValueError:
-            return render(request,'todo/createtodo.html',{'form':TodoForm(),'error':"Bad data Passed! Try again."})
+            return render(request,'todo/createtodo.html',{'form':MyBiodataForm(),'error':"Bad data Passed! Try again."})
 
 @login_required
 def createtodo(request):
