@@ -8,7 +8,7 @@ from .models import Todo,Contact,MyProfile,SendMultiMail,MyBiodata
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
-import re,random
+import re,random,datetime
 import csv,logging,xlwt,googletrans
 
 from django.http import HttpResponse,JsonResponse
@@ -551,7 +551,8 @@ def createbiodatatodo(request):
 
             if form.is_valid():
                 newtodo.save()
-                return redirect(mybiodatatodo)
+                todos = MyBiodata.objects.filter(user=request.user).order_by('-id')
+                return render(request,'todo/mybiodatatodos.html',{'todos':todos,'msg':'BIODATA Created Successfully.'})
             else:
                 return render(request,'todo/createbiodatatodo.html',{'form':MyBiodataForm(),'error':"Bad data Passed!Please Try again."})
         except ValueError:
@@ -559,8 +560,43 @@ def createbiodatatodo(request):
 
 @login_required
 def mybiodatatodo(request):
-    todos = MyBiodata.objects.filter(user=request.user)
+    todos = MyBiodata.objects.filter(user=request.user,deletedrow=False).order_by('-id')
     return render(request,'todo/mybiodatatodos.html',{'todos':todos})
+@login_required
+def viewmybiodatatodo(request,todo_pk):
+    todo=get_object_or_404(MyBiodata,pk=todo_pk,user=request.user,deletedrow=False)
+    if request.method == 'GET':
+        form =  MyBiodataForm(instance=todo)
+        return render(request,'todo/viewmybiodatatodo.html',{'todo':todo,'form':form})
+    else:
+        try:
+            form=MyBiodataForm(request.POST,instance=todo)
+            form.save()
+            todos = MyBiodata.objects.filter(user=request.user).order_by('-id')
+            return render(request,'todo/mybiodatatodos.html',{'todos':todos,'msg':'BIODATA updated Successfully.'})
+        except ValueError:
+            return render(request,'todo/viewmybiodatatodo.html',{'todo':todo,'form':form,'error':"Bad info passed.Please try again."})
+
+@login_required
+def mybiodatadeletetodo(request,todo_pk):
+    todo=get_object_or_404(MyBiodata,pk=todo_pk,user=request.user,deletedrow=False)
+    if request.method == 'GET':
+        form =  MyBiodataForm(instance=todo)
+        return render(request,'todo/viewmybiodatatodo.html',{'todo':todo,'form':form})
+    else:
+        try:
+            todo.deletedrow=True
+            todo.last_updated_at=datetime.datetime.now()
+            todo.save()
+            todos = MyBiodata.objects.filter(user=request.user,deletedrow=False).order_by('-id')
+            return render(request,'todo/mybiodatatodos.html',{'todos':todos,'msg':'Biodata deleted Successfully.'})
+        except ValueError:
+            return render(request,'todo/viewmybiodatatodo.html',{'todo':todo,'form':form,'error':"Bad info passed.Please try again."})
+
+
+
+
+
 @login_required
 def createtodo(request):
     if request.method == 'GET':

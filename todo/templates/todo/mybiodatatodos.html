@@ -8,7 +8,9 @@
           <div class="col-12">
 
           <div class="toggle"> {% include 'todo/modelpopuptodo.html' %} </div>
-
+{% if msg %}
+<h5 class="mt-2 alert alert-info">{{msg}}</h5>
+{% endif %}
             <h5 class="mt-2 text-success font-weight-bold">My Biodata({{todos|length}})</h5>
 
 
@@ -21,7 +23,13 @@
      </div>
      <div class="col-lg-6 col-md-6 col-sm-6 ">
 
-      <h3 class="text-primary justify-content-center">{{todo.name}}</h3>
+      <h3 class="text-primary justify-content-center">{{todo.name}}
+<button class="btn btn-outline-secondary btn-sm bg-success "><a target="_blank" style="text-decoration:none;color:#ffffff;" href="{% url 'viewmybiodatatodo' todo.id %}">EDIT</a></button>
+<form method="POST" action="{% url 'mybiodatadeletetodo' todo.id %}">
+  {% csrf_token %}
+<button type="submit" class="btn btn-danger">DELETE</button>
+</form>
+      </h3>
 
         <table style="max-width:80%;background:white;" class=" table-responsive table-hover">
 
@@ -37,7 +45,7 @@
 {% if todo.name %}
     <tr>
       <td class="font-weight-bold text-danger bg-active">NAME:</td>
-      <td class="text-success"><mark{{todo.name}}</td>
+      <td class="text-success"><mark>{{todo.name}}</td>
     </tr>
 {% endif %}
 {% if todo.age %}
@@ -86,6 +94,12 @@
     <tr>
       <td class="font-weight-bold text-danger bg-active">CAST:</td>
       <td class="text-success">{{todo.cast}}</td>
+    </tr>
+{% endif %}
+{% if todo.manglik %}
+    <tr>
+      <td class="font-weight-bold text-danger bg-active">MANGLIK:</td>
+      <td class="text-success">{{todo.manglik}}</td>
     </tr>
 {% endif %}
 

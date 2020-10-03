@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django import forms
 from django.core.validators import MaxValueValidator, MinValueValidator
 import datetime
+from django.utils.translation import gettext_lazy as _
 # Create your models here.
 
 
@@ -48,106 +49,111 @@ class SendMultiMail(models.Model):
 
 class MyBiodata(models.Model):
     class Marital(models.TextChoices):
-        married='yy'
-        Not_married='nn'
-        Not_Specified='ns'
+        married='married'
+        Not_married='Not_married'
+        Not_Specified='Not_Specified'
     class Disabiliti(models.TextChoices):
-        Yes='yy'
-        No='nn'
-        Not_Specified='ns'
+        Yes='Yes'
+        No='No'
+        Not_Specified='Not_Specified'
     class Complexion(models.TextChoices):
-        Fair='ff'
-        Milky_Fair='mm'
-        Very_Fair ='vf'
-        Brown='br'
-        Dark = 'dd'
-        Normal = 'nn'
-        Not_Specified='ns'
+        Fair='Fair'
+        Milky_Fair='Milky_Fair'
+        Very_Fair ='Very_Fair'
+        Brown='Brown'
+        Dark = 'Dark'
+        Normal = 'Normal'
+        Not_Specified='Not_Specified'
     class Diet(models.TextChoices):
-        Vegitarian ='ve'
-        Non_Vegetaria='nv'
-        Eagitarian='eg'
-        Not_Specified='ns'
+        Vegitarian ='Vegitarian'
+        Non_Vegetaria='Non_Vegetaria'
+        Eagitarian='Eagitarian'
+        Not_Specified='Not_Specified'
     class Contact(models.TextChoices):
-        Visible_To_All='pu'
-        Visible_To_me='pr'
-        Hidden='hi'
-        Not_Specified='ns'
+        Visible_To_All='Visible_To_All'
+        Visible_To_me='Visible_To_me'
+        Hidden='Hidden'
+        Not_Specified='Not_Specified'
     class Profession(models.TextChoices):
-        Accountant ='ac'
-        Teacher='te'
-        Technician='tc'
-        Laborer='la'
-        Banker='ba'
-        Farmer='fa'
-        Shop_Keeper='sh'
-        Business_Man ='bm'
-        Engineer='en'
-        Doctor='do'
-        others='ot'
-        Not_Specified='ns'
+        Accountant ='Accountant'
+        Teacher='Teacher'
+        Technician='Technician'
+        Laborer='Laborer'
+        Banker='Banker'
+        Farmer='Farmer'
+        Shop_Keeper='Shop_Keeper'
+        Business_Man ='Business_Man'
+        Engineer='Engineer'
+        Doctor='Doctor'
+        others='others'
+        Not_Specified='Not_Specified'
     class Religion(models.TextChoices):
-        Hindu='hi'
-        Muslim='mu'
-        Sikh='si'
-        Parsi='pa'
-        Not_Specified='ns'
+        Hindu='Hindu'
+        Muslim='Muslim'
+        Sikh='Sikh'
+        Parsi='Parsi'
+        Not_Specified='Not_Specified'
     class CreatedBy(models.TextChoices):
-        _Self='se'
-        Parents='pa'
-        Friedns='fr'
-        Relatives='re'
-        Others='ot'
-        Not_Specified='ns'
+        _Self='_Self'
+        Parents='Parents'
+        Friedns='Friedns'
+        Relatives='Relatives'
+        Others='Others'
+        Not_Specified='Not_Specified'
     class BodyType(models.TextChoices):
-        Slim = 'sl'
-        Average = 'av'
-        Fit = 'ft'
-        Healthy ='he'
-        Chubby ='ch'
-        Fatty='fa'
-        Not_Specified='ns'
+        Slim = 'Slim'
+        Average = 'Average'
+        Fit = 'Fit'
+        Healthy ='Healthy'
+        Chubby ='Chubby'
+        Fatty='Fatty'
+        Not_Specified='Not_Specified'
     class MotherToung(models.TextChoices):
-        Hindi='hi'
-        English='en'
-        Both='bt'
-        Not_Specified='ns'
+        Hindi='Hindi'
+        English='English'
+        Both='Both'
+        Not_Specified='Not_Specified'
     class Social(models.TextChoices):
-        Religious_Background='re'
-        Normal='nr'
-        Both='bt'
-        Not_Specified='ns'
+        Religious_Background='Religious_Background'
+        Normal='Normal'
+        Both='Both'
+        Not_Specified='Not_Specified'
     class Cast(models.TextChoices):
-        Kushwaha='ku'
-        Maurya='mr'
-        Shakya='sh'
-        Saini='sa'
-        Not_Specified='ns'
+        Kushwaha='Kushwaha'
+        Maurya='Maurya'
+        Shakya='Shakya'
+        Saini='Saini'
+        Not_Specified='Not_Specified'
     class ProfessionType(models.TextChoices):
-        Private='pr'
-        Government='go'
-        Semi_Govt='sg'
-        Contratual='ca'
-        Others='ot'
-        Not_Specified='ns'
+        Private='Private'
+        Government='Government'
+        Semi_Govt='Semi_Govt'
+        Contratual='Contratual'
+        Others='Others'
+        Not_Specified='Not_Specified'
     class MotherOccupation(models.TextChoices):
-        House_wife='hw'
-        Accountant ='ac'
-        Teacher='te'
-        Technician='tc'
-        Laborer='la'
-        Banker='ba'
-        Farmer='fa'
-        Shop_Keeper='sh'
-        Business_Man ='bm'
-        Engineer='en'
-        Doctor='do'
-        others='ot'
-        Not_Specified='ns'
+        House_wife='House_wife'
+        Accountant ='Accountant'
+        Teacher='Teacher'
+        Technician='Technician'
+        Laborer='Laborer'
+        Banker='Banker'
+        Farmer='Farmer'
+        Shop_Keeper='Shop_Keeper'
+        Business_Man ='Business_Man'
+        Engineer='Engineer'
+        Doctor='Doctor'
+        others='others'
+        Not_Specified='Not_Specified'
     class Gender(models.TextChoices):
-        Female = 'fe'
-        Male = 'ma'
-        Not_Specified='ns'
+        Female = 'Female'
+        Male = 'Male'
+        Not_Specified='Not_Specified'
+    class Manglik(models.TextChoices):
+        Yes = 'Yes'
+        No = 'No'
+        Not_Specified='Not_Specified'
+
 
 
 
@@ -155,36 +161,40 @@ class MyBiodata(models.Model):
     username = models.CharField(max_length=100,blank=True)
     name = models.CharField(max_length=100,default="")
     age = models.PositiveIntegerField(default=22, validators=[MinValueValidator(18), MaxValueValidator(100)])
-    created_by = models.CharField(choices=CreatedBy.choices,max_length=2,default=CreatedBy.Not_Specified)
-    marital_Status = models.CharField(choices=Marital.choices,max_length=2,default=Marital.Not_Specified)
-    gender = models.CharField(choices=Gender.choices,max_length=2,default=Gender.Not_Specified)
+    created_by = models.CharField(choices=CreatedBy.choices,max_length=20,default=CreatedBy.Not_Specified)
+    marital_Status = models.CharField(choices=Marital.choices,max_length=20,default=Marital.Not_Specified)
+    gender = models.CharField(choices=Gender.choices,max_length=20,default=Gender.Not_Specified)
     hobbies = models.CharField(max_length=400,blank=True)
-    mother_Toung = models.CharField(choices=MotherToung.choices,max_length=2,default=MotherToung.Hindi)
-    social = models.CharField(choices=Social.choices,max_length=2,default=Social.Not_Specified)
-    body_Type = models.CharField(choices=BodyType.choices,max_length=2,default=BodyType.Average)
-    cast = models.CharField(choices=Cast.choices,max_length=2,default=Cast.Not_Specified)
+    mother_Toung = models.CharField(choices=MotherToung.choices,max_length=20,default=MotherToung.Hindi)
+    social = models.CharField(choices=Social.choices,max_length=20,default=Social.Religious_Background)
+    body_Type = models.CharField(choices=BodyType.choices,max_length=20,default=BodyType.Average)
+    cast = models.CharField(choices=Cast.choices,max_length=20,default=Cast.Not_Specified)
+    manglik = models.CharField(choices=Manglik.choices,max_length=20,default=Manglik.Not_Specified)
     height = models.CharField(max_length=100,blank=True)
-    physical_disability = models.CharField(choices=Disabiliti.choices,max_length=2,default=Disabiliti.Not_Specified)
+    physical_disability = models.CharField(choices=Disabiliti.choices,max_length=20,default=Disabiliti.Not_Specified)
     body_Weight=models.IntegerField(default=60)
-    complexion = models.CharField(choices=Complexion.choices,max_length=2,default=Complexion.Fair)
+    complexion = models.CharField(choices=Complexion.choices,max_length=20,default=Complexion.Fair)
     DOB = models.DateField(default=datetime.date.today)
     place = models.CharField(max_length=50,blank=True)
-    religion = models.CharField(choices=Religion.choices,max_length=2,default=Religion.Not_Specified)
-    diet =  models.CharField(choices=Diet.choices,max_length=2,default=Diet.Not_Specified)
+    religion = models.CharField(choices=Religion.choices,max_length=20,default=Religion.Hindu)
+    diet =  models.CharField(choices=Diet.choices,max_length=20,default=Diet.Vegitarian)
     contact_number = models.CharField(max_length=50,blank=True)
     email_ID = models.CharField(max_length=100,blank=True)
-    contact_privacy = models.CharField(choices=Contact.choices,max_length=2,default=Contact.Not_Specified)
+    contact_privacy = models.CharField(choices=Contact.choices,max_length=20,default=Contact.Not_Specified)
     father_name = models.CharField(max_length=100,default="")
-    father_occupation = models.CharField(choices=Profession.choices,max_length=2,default=Profession.Not_Specified)
+    father_occupation = models.CharField(choices=Profession.choices,max_length=20,default=Profession.Not_Specified)
     mother_name = models.CharField(max_length=100,default="")
-    mother_occupation = models.CharField(choices=MotherOccupation.choices,max_length=2,default=MotherOccupation.House_wife)
+    mother_occupation = models.CharField(choices=MotherOccupation.choices,max_length=20,default=MotherOccupation.House_wife)
     family_details = models.CharField(max_length=500,blank=True)
     education = models.CharField(max_length=100,blank=True)
-    profession = models.CharField(choices=Profession.choices,max_length=2,default=Profession.Not_Specified)
-    profession_type = models.CharField(choices=ProfessionType.choices,max_length=2,default=ProfessionType.Not_Specified)
+    profession = models.CharField(choices=Profession.choices,max_length=20,default=Profession.Not_Specified)
+    profession_type = models.CharField(choices=ProfessionType.choices,max_length=20,default=ProfessionType.Not_Specified)
     job_location = models.CharField(max_length=50,blank=True)
     annual_Income = models.CharField(max_length=50,blank=True)
     about = models.CharField(max_length=500,blank=True)
     photo=models.ImageField(upload_to='todo/images/',default='default.jpg')
+    created_at = models.DateTimeField(auto_now_add=True)
+    last_updated_at = models.DateTimeField(null=True)
+    deletedrow=models.BooleanField(default=False)
     def __str__(self):
         return self.username

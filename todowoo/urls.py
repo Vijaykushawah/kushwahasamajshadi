@@ -57,6 +57,8 @@ urlpatterns = [
     path('passwordgenerator/',views.passwordgeneratortodo,name='passwordgeneratortodo'),
     path('createbiodata/',views.createbiodatatodo,name='createbiodatatodo'),
     path('mybiodata/',views.mybiodatatodo,name='mybiodatatodo'),
+    path('mybiodata/<int:todo_pk>',views.viewmybiodatatodo,name='viewmybiodatatodo'),
+    path('mybiodata/<int:todo_pk>/delete',views.mybiodatadeletetodo,name='mybiodatadeletetodo'),
 
 ]
 if settings.DEBUG:
