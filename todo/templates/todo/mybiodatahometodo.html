@@ -38,6 +38,9 @@
      <div class="col-lg-6 col-md-6 col-sm-6 ">
         <table style="max-width:80%;background:white;" class=" table-responsive table-hover">
   <tbody>
+    <th  class="text-primary"><mark>BIODATA ID:-
+{{todo.id}}
+    </th>
     <th colspan="2" class="text-primary">Basic Details
 <img style="border-radius: 50%"  width="45px" height="35px" src="{% static 'todo/images/basicDetail.png' %}">
     </th>
@@ -235,8 +238,13 @@
     </tr>
 {% endif %}
 <tr>
-  <td class="font-weight-bold text-danger bg-active"><a href="#"><img style="border-radius: 50%"  width="75px" height="65px" src="{% static 'todo/images/contactView.png' %}">VIEW</a></td>
-    <td class="font-weight-bold text-danger"><a href="#"><img style="border-radius: 50%" width="70px" height="60px" src="{% static 'todo/images/connectNow.png' %}">CONNECT</a></td>
+  <style>
+
+  </style>
+
+  <td class="font-weight-bold text-danger bg-active viewcontact" id="{{todo.id}}"><a class="" href="#"><img style="border-radius: 50%"  width="75px" height="65px" src="{% static 'todo/images/contactView.png' %}">VIEW</a>
+  </td>
+    <td class="font-weight-bold text-danger"><a href="#"><img style="border-radius: 50%" width="60px" height="55px" src="{% static 'todo/images/connectNow.png' %}">CONNECT</a></td>
 </tr>
 
 

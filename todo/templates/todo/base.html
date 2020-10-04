@@ -136,6 +136,31 @@ $(document).ready(function(){
   });
 });
 });
+<!-- view contact popup -->
+
+
+$(document).ready(function(){
+  $('.viewcontact').click(function(){
+    var id=$(this).attr('id');
+
+    $.ajax({
+    url:'{% url 'viewcontacttodo'  %}',
+    type:'POST',
+    dataType: 'json',
+    data:{
+      'biodataid':id,
+      'csrfmiddlewaretoken': '{{ csrf_token }}'
+    },
+    success: function( data )
+         {
+           alert(data.msg);
+
+         }
+    });
+    alert('Please wait,We are processing your request...')
+  });
+});
+
 <!-- download biodata -->
 $(document).ready(function(){
   $('.downloadbiodatabtn').click(function(){
@@ -167,6 +192,72 @@ var HTML_Width = $(".html-content").width();
   });
 });
 
+<!-- sidebar biodata -->
+
+$(document).ready(function () {
+
+    $('#sidebarCollapse').on('click', function () {
+        $('#sidebar').toggleClass('active');
+        $('#left').toggleClass('col-4');
+        $('#right').toggleClass('col-8');
+        $('#right').toggleClass('col-10');
+    });
+
+});
+
+<!-- inboxselecteduser -->
+
+function chathome(){
+  $('#right').hide();
+  $('#rightinbox').hide();
+  $('#chathome').addClass('text-success col-8 ');
+  var body = '<div><h5 class="text-danger">HELLO WELCOME,HERE YOU CAN DO SOCIAL INTERACTION WITH OTHERS.</h5></div>';
+  $('#chathome').append(body);
+  var body2='<div>Please note down biodata id for which user you want to chat from biodata home page.After forward you can send them request to connect.Once user accepts your request then you can do messages them related to your queries.   </div>';
+  $('#chathome').append(body2);
+  var body3 = '<br><br>In case any problem You can  contact us  on various given plateforms. Our vision is to provide plateform for entire community .We have seen there are multiple plateforms available but this is open to all free of cost';
+  $('#chathome').append(body3);
+  var body4='<br><br><img style="border-radius: 10%" width="70%" height="50%" src="{% static 'todo/images/chathome.png' %}">';
+  $('#chathome').append(body4);
+}
+
+function jsfunction(a){
+  $.ajax({
+  url:'{% url 'biodatachatstodo'  %}',
+  type:'POST',
+  dataType: 'json',
+  data:{
+    'msgfromusername':a,
+    'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function( data )
+       {
+         console.log(typeof data);
+         console.log(typeof data.msgs);
+//          for (var prop in data.msgs) {
+//   alert("Key:" + prop);
+//   alert("Value:" + data.msgs[prop]);
+// }
+//          alert(JSON.stringify(data.msgs));
+         var obj=JSON.parse(JSON.stringify(data.msgs));
+         $('#right').hide();
+         $('#rightinbox').addClass('text-danger col-8 ');
+         $('#rightinbox').append('<ul class="list-group">');
+           $('#rightinbox').append('<h5>Message Recieved From '+data.result+' </h5>');
+for (var prop in data.msgs) {
+  var msg =data.msgs[prop]['msg'];
+           $('#rightinbox').append('<li class="list-group-item text-dark list-group-item-action"><span class="text-info">'+data.msgs[prop]['msgfromusername']+'</span>:'+msg+'</li>');
+}
+         $('#rightinbox').append('</ul>');
+
+
+       },
+       error:function(data){
+         alert('error');
+       }
+  });
+
+}
 
 <!-- scroll button added -->
 
@@ -207,6 +298,8 @@ function topFunction() {
                    <a href="{% url 'mybiodatatodo' %}" class="dropdown-item">UPDATE BIODATA</a>
                    <a href="{% url 'mybiodataprivacytodo' %}" class="dropdown-item">BIODATA PRIVACY</a>
                    <a href="{% url 'mybiodatadownloadtodo' %}" class="dropdown-item">DOWNLOAD MY BIODATA </a>
+                   <a href="{% url 'biodatachatstodo' %}" class="dropdown-item">MY CHATS </a>
+
                  </ul>
    </li>
 

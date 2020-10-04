@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import Todo,Contact,MyProfile,SendMultiMail,MyBiodata,BiodataPrivacy
+from .models import Todo,Contact,MyProfile,SendMultiMail,MyBiodata,BiodataPrivacy,BiodataHelp
 
 
 class TodoForm(ModelForm):
@@ -39,3 +39,8 @@ class BiodataPrivacyForm(ModelForm):
         'hide_profile'}
     field_order=['biodataid','contact_visibility','email_visibility','education_detail_visibility','address_detail_visibility',
     'hide_profile']
+
+class BiodataHelpForm(ModelForm):
+    class Meta:
+        model=BiodataHelp
+        fields = '__all__'

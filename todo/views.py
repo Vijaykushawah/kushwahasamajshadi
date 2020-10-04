@@ -3,8 +3,8 @@ from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.contrib.auth import login,logout,authenticate
-from .forms import TodoForm,ContactForm,MyProfileForm,SendMultiMailForm,MyBiodataForm,BiodataPrivacyForm
-from .models import Todo,Contact,MyProfile,SendMultiMail,MyBiodata,BiodataPrivacy
+from .forms import TodoForm,ContactForm,MyProfileForm,SendMultiMailForm,MyBiodataForm,BiodataPrivacyForm,BiodataHelpForm
+from .models import Todo,Contact,MyProfile,SendMultiMail,MyBiodata,BiodataPrivacy,MyBiodataInbox,MyBiodataChatbox,BiodataHelp
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
@@ -17,6 +17,8 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.forms.models import model_to_dict
+import json
 # Create your views here.
 logger = logging.getLogger(__name__)
 def signupuser(request):
@@ -649,6 +651,108 @@ def mybiodatadownloadtodo(request):
             return render(request,'todo/mybiodatadownloadtodo.html',{'error':"It's not your biodata ID, Please try again."})
 
 
+@login_required
+def viewcontacttodo(request):
+    todo=get_object_or_404(MyBiodata,pk=request.POST['biodataid'],deletedrow=False)
+    try:
+        msg = MIMEMultipart()
+        msg['From'] = 'stickymemonoreply@gmail.com'
+        msg['To'] = 'rohitkushwah9527@gmail.com'
+        msg['Subject'] = " VIEW CONTACT REQUEST"
+        body = " {} : WANTS TO VIEW YOUR CONTACT DATA ON"
+        "KUSHWAHA SAMAJ SHADI WEBSITE,KINDLY CHECK YOUR INBOX AND SHARE DETAILS IF INTERESTED ".format(request.user.username)
+        msg.attach(MIMEText(body, 'plain'))
+        s = smtplib.SMTP('smtp.gmail.com', 587)
+        s.starttls()
+        s.login(msg['From'], "Sticky@#123")
+        text = msg.as_string()
+        s.sendmail(msg['From'], msg['To'], text)
+        s.quit()
+        result='YOUR VIEW CONTACT REQUEST RAISED AND HAVE SENT MAIL TO USER '
+    except:
+        result='SORRY,SELECTED BIODATA USER HAS NOT UPLOADED EMAIL ID'
+    return JsonResponse({'msg':result})
+
+
+
+@login_required
+def biodatachatstodo(request):
+    if request.method == 'GET':
+        try:
+            logger.error('before inbox')
+            inbox=get_list_or_404(MyBiodataInbox,user=request.user)
+            logger.error('after inbox')
+        except:
+            inbox=[]
+        try:
+            chats=get_list_or_404(MyBiodataChatbox,user=request.user)
+        except:
+            chats=[]
+        return render(request,'todo/biodatachatstodo.html',{'inbox':inbox,'chats':chats})
+    else:
+        if request.method == 'POST':
+            inbox=get_list_or_404(MyBiodataInbox,user=request.user,msgfromusername=request.POST['msgfromusername'])
+            mydict={}
+            for row in inbox:
+                localdict={}
+                localdict['msg']=row.msg
+                localdict['msgfromusername']=row.msgfromusername
+                mydict[row.id]=localdict
+            logger.error(mydict)
+            return JsonResponse({'result':request.POST['msgfromusername'],'msgs':mydict})
+        try:
+            todo=get_object_or_404(MyBiodata,pk=request.POST['biodataid'],user=request.user,deletedrow=False)
+            logger.error(todo.id)
+            return render(request,'todo/mybiodatadownloadtodo.html',{'todo':todo,'found':'found'})
+        except :
+            return render(request,'todo/mybiodatadownloadtodo.html',{'error':"It's not your biodata ID, Please try again."})
+
+
+def biodatahelptodo(request):
+
+    if request.method == 'GET':
+        return render(request,'todo/biodatahelptodo.html',{'form':BiodataHelpForm()})
+    else:
+        try:
+            form=BiodataHelpForm(request.POST)
+            form.save()
+            try:
+                msg = MIMEMultipart()
+                msg['From'] = 'stickymemonoreply@gmail.com'
+                msg['To'] = 'rohitkushwah9527@gmail.com'
+                msg['Subject'] = request.POST['subject']
+                body = "{} & contact number {} & emailid {}".format(request.POST['query'],request.POST['contact_number'],request.POST['email_id'])
+                msg.attach(MIMEText(body, 'plain'))
+                s = smtplib.SMTP('smtp.gmail.com', 587)
+                s.starttls()
+                s.login(msg['From'], "Sticky@#123")
+                text = msg.as_string()
+                s.sendmail(msg['From'], msg['To'], text)
+                s.quit()
+
+                msg = MIMEMultipart()
+                msg['From'] = 'stickymemonoreply@gmail.com'
+                msg['To'] = request.POST['email_id']
+                msg['Subject'] = request.POST['subject']
+                body = "You send us this query {}  .We will help you on priority Thanks".format(request.POST['query'])
+                msg.attach(MIMEText(body, 'plain'))
+                s = smtplib.SMTP('smtp.gmail.com', 587)
+                s.starttls()
+                s.login(msg['From'], "Sticky@#123")
+                text = msg.as_string()
+                s.sendmail(msg['From'], msg['To'], text)
+                s.quit()
+            except:
+                logger.error('error occured in biodata help')
+
+
+
+            todos = BiodataHelp.objects.latest('id')
+            return render(request,'todo/biodatahelptodo.html',{'form':BiodataHelpForm(),'contact':todos})
+        except ValueError:
+            return render(request,'todo/biodatahelptodo.html',{'form':BiodataHelpForm(),'error':"Bad data Passed! Try again."})
+
+    return render(request,'todo/biodatahelptodo.html')
 
 @login_required
 def createtodo(request):

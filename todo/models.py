@@ -230,3 +230,22 @@ class MyBiodata(models.Model):
     hide_profile =models.CharField(choices=HideBiodata.choices,max_length=20,default=HideBiodata.Show)
     def __str__(self):
         return self.username
+
+class MyBiodataInbox(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE,null=True)
+    msgfromusername = models.CharField(max_length=200,blank=True)
+    subject = models.CharField(max_length=200,null=True)
+    msg =  models.TextField(null=True)
+    created = models.DateTimeField(auto_now_add=True)
+class MyBiodataChatbox(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE,null=True)
+    msgtousername = models.CharField(max_length=200,blank=True)
+    subject = models.CharField(max_length=200,null=True)
+    msg =  models.TextField(null=True)
+    created = models.DateTimeField(auto_now_add=True)
+class BiodataHelp(models.Model):
+    name = models.CharField(max_length=100,default="")
+    email_id = models.EmailField(default="")
+    contact_number = models.CharField(max_length=100,default="")
+    subject=models.CharField(max_length=100,default="")
+    query = models.TextField(blank=True)
