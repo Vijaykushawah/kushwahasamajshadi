@@ -210,6 +210,9 @@ $(document).ready(function () {
 function chathome(){
   $('#right').hide();
   $('#rightinbox').hide();
+  $('#rightsentbox').hide();
+  $('#chathome').show()
+  $('#chathome').empty();
   $('#chathome').addClass('text-success col-8 ');
   var body = '<div><h5 class="text-danger">HELLO WELCOME,HERE YOU CAN DO SOCIAL INTERACTION WITH OTHERS.</h5></div>';
   $('#chathome').append(body);
@@ -228,12 +231,13 @@ function jsfunction(a){
   dataType: 'json',
   data:{
     'msgfromusername':a,
+    'sentboxview':'no',
     'csrfmiddlewaretoken': '{{ csrf_token }}'
   },
   success: function( data )
        {
-         console.log(typeof data);
-         console.log(typeof data.msgs);
+         //console.log(typeof data);
+         //console.log(typeof data.msgs);
 //          for (var prop in data.msgs) {
 //   alert("Key:" + prop);
 //   alert("Value:" + data.msgs[prop]);
@@ -241,9 +245,12 @@ function jsfunction(a){
 //          alert(JSON.stringify(data.msgs));
          var obj=JSON.parse(JSON.stringify(data.msgs));
          $('#right').hide();
+         $('#rightsentboxspecificuser').hide();
+         $('#rightinbox').empty();
+         $('#rightinbox').show();
          $('#rightinbox').addClass('text-danger col-8 ');
          $('#rightinbox').append('<ul class="list-group">');
-           $('#rightinbox').append('<h5>Message Recieved From '+data.result+' </h5>');
+           $('#rightinbox').append('<h5>Message Recieved From<a href="#"> '+data.result+'<a> </h5>');
 for (var prop in data.msgs) {
   var msg =data.msgs[prop]['msg'];
            $('#rightinbox').append('<li class="list-group-item text-dark list-group-item-action"><span class="text-info">'+data.msgs[prop]['msgfromusername']+'</span>:'+msg+'</li>');
@@ -258,6 +265,286 @@ for (var prop in data.msgs) {
   });
 
 }
+<!-- chatoutbox  -->
+function chatsentbox(){
+  $.ajax({
+  url:'{% url 'biodatachatstodo'  %}',
+  type:'POST',
+  dataType: 'json',
+  data:{
+    'sentboxview':'sentboxview',
+    'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function( data )
+       {
+         $('#rightinbox').hide();
+         $('#rightsentbox').addClass('text-success col-8 ');
+         console.log(typeof data);
+         console.log(typeof data.msgs);
+        //          for (var prop in data.msgs) {
+        //   alert("Key:" + prop);
+        //   alert("Value:" + data.msgs[prop]);
+        // }
+        //          alert(JSON.stringify(data.msgs));
+         var obj=JSON.parse(JSON.stringify(data.msgs));
+         $('#right').hide();
+         $('#rightinbox').hide();
+         $('#chathome').hide();
+         $('#rightsentboxspecificuser').hide();
+         $('#rightsentbox').empty();
+         $('#rightsentbox').show();
+         $('#rightsentbox').innerHTML='';
+         $('#rightsentbox').addClass('text-danger col-8 ');
+         $('#rightsentbox').append('<ul class="list-group">');
+           $('#rightsentbox').append('<h5>Message Sents:</h5>');
+        for (var prop in data.msgs) {
+        var msg =data.msgs[prop]['msg'];
+           $('#rightsentbox').append('<li class="list-group-item text-dark list-group-item-action"><span class="text-info"><a onclick=sentboxspecificuserrdata("'+data.msgs[prop]['msgtousername']+'"); href="#">'+data.msgs[prop]['msgtousername']+'</a></span>:'+msg+'</li>');
+        }
+         $('#rightsentbox').append('</ul>');
+
+
+
+
+
+       },
+       error:function(data){
+         alert('error');
+       }
+  });
+
+
+
+}
+<!-- chatoutbox specific user data -->
+
+function sentboxspecificuserrdata(a){
+    $.ajax({
+    url:'{% url 'biodatachatstodo'  %}',
+    type:'POST',
+    dataType: 'json',
+    data:{
+      'msgfromusername':a,
+      'sentboxview':'userspecific',
+      'csrfmiddlewaretoken': '{{ csrf_token }}'
+    },
+    success: function( data )
+         {
+           //console.log(typeof data);
+           //console.log(typeof data.msgs);
+  //          for (var prop in data.msgs) {
+  //   alert("Key:" + prop);
+  //   alert("Value:" + data.msgs[prop]);
+  // }
+  //          alert(JSON.stringify(data.msgs));
+           var obj=JSON.parse(JSON.stringify(data.msgs));
+           $('#right').hide();
+           $('#rightinbox').hide();
+           $('#chathome').hide();
+           $('#rightsentbox').hide();
+           $('#rightsentboxspecificuser').empty();
+           $('#rightsentboxspecificuser').show();
+           $('#rightsentboxspecificuser').innerHTML='';
+           $('#rightsentboxspecificuser').addClass('text-danger col-8 ');
+
+           $('#rightsentboxspecificuser').append('<ul class="list-group">');
+             $('#rightsentboxspecificuser').append('<h5>Messages sent to <a href="#"> '+data.result+'<a>: </h5>');
+  for (var prop in data.msgs) {
+    var msg =data.msgs[prop]['msg'];
+             $('#rightsentboxspecificuser').append('<li class="list-group-item text-dark list-group-item-action"><span class="text-info">'+data.msgs[prop]['msgfromusername']+'</span>:'+msg+'</li>');
+  }
+           $('#rightsentboxspecificuser').append('</ul>');
+
+
+         },
+         error:function(data){
+           alert('error');
+         }
+    });
+
+}
+
+
+function pendingrequests(){
+
+  $.ajax({
+  url:'{% url 'biodatachatstodo'  %}',
+  type:'POST',
+  dataType: 'json',
+  data:{
+    'msgfromusername':'a',
+    'sentboxview':'pendingrequests',
+    'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function( data )
+       {
+
+         //console.log(typeof data);
+         //console.log(typeof data.msgs);
+//          for (var prop in data.msgs) {
+//   alert("Key:" + prop);
+//   alert("Value:" + data.msgs[prop]);
+// }
+//          alert(JSON.stringify(data.msgs));
+         var obj=JSON.parse(JSON.stringify(data.msgs));
+         $('#right').hide();
+         $('#rightinbox').hide();
+         $('#chathome').hide();
+         $('#rightsentbox').hide();
+         $('#rightsentboxspecificuser').empty();
+         $('#rightsentboxspecificuser').show();
+         $('#rightsentboxspecificuser').innerHTML='';
+         $('#rightsentboxspecificuser').addClass('text-danger col-8 ');
+
+         $('#rightsentboxspecificuser').append('<ul class="list-group">');
+           $('#rightsentboxspecificuser').append('<h5> REQUESTS : </h5>');
+for (var prop in data.msgs) {
+  var contreq =data.msgs[prop]['contact_view_request'];
+  var biodataid =data.msgs[prop]['biodataid'];
+  var conreq =data.msgs[prop]['connect_request'];
+  var rowid =data.msgs[prop]['rowid'];
+  var reqtype=data.msgs[prop]['request_type'];
+  var passed =rowid+"@@"+reqtype+"@@"+"approve";
+
+
+           $('#rightsentboxspecificuser').append('<li class="list-group-item text-dark list-group-item-action"><span class="text-info">User'+data.msgs[prop]['request_from']+'</span>: wants to '+reqtype+' with you whose biodata id is-<mark>'+biodataid+'</mark> Kindly check requested user profile and approve request.</li><button class="btn btn-outline-secondary  bg-success "><a class="approve" onclick="approverequest('+rowid+');"  style="text-decoration:none;color:#ffffff;" href="#">APPROVE</a></button>');
+
+$('#rightsentboxspecificuser').append('<button class="btn btn-outline-secondary  bg-danger "><a onclick="rejectequest('+rowid+');" style="text-decoration:none;color:#ffffff;" href="#">REJECT</a></button>');
+$('#rightsentboxspecificuser').append('<button class="btn btn-outline-secondary  bg-danger "><a onclick="deleterequest('+rowid+');" style="text-decoration:none;color:#ffffff;" href="#">DELETE</a></button>');                         }
+         $('#rightsentboxspecificuser').append('</ul>');
+
+
+       },
+       error:function(data){
+         alert('error');
+       }
+  });
+
+}
+<!-- approve request -->
+
+function approverequest(rid){
+
+  $.ajax({
+  url:'{% url 'biodatachatstodo'  %}',
+  type:'POST',
+  dataType: 'json',
+  data:{
+    'msgfromusername':'abc',
+    'sentboxview':'approvereq',
+    'rowid':rid,
+    'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function( data )
+       {
+alert(data.result);
+       },
+       error:function(data){
+         alert('error');
+       }
+  });
+
+
+
+
+}
+
+
+<!-- reject request -->
+
+function rejectequest(rid){
+
+  $.ajax({
+  url:'{% url 'biodatachatstodo'  %}',
+  type:'POST',
+  dataType: 'json',
+  data:{
+    'msgfromusername':'abc',
+    'sentboxview':'rejectreq',
+    'rowid':rid,
+    'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function( data )
+       {
+      alert(data.result);
+
+
+       },
+       error:function(data){
+         alert('error');
+       }
+  });
+
+}
+
+
+<!-- delete request -->
+function deleterequest(rid){
+
+  $.ajax({
+  url:'{% url 'biodatachatstodo'  %}',
+  type:'POST',
+  dataType: 'json',
+  data:{
+    'msgfromusername':'abc',
+    'sentboxview':'deletereq',
+    'rowid':rid,
+    'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function( data )
+       {
+alert(data.result);
+       },
+       error:function(data){
+         alert('error');
+       }
+  });
+
+}
+
+<!-- unblock user -->
+function unblockuser(a){
+  $.ajax({
+  url:'{% url 'biodatachatstodo'  %}',
+  type:'POST',
+  dataType: 'json',
+  data:{
+    'msgfromusername':'abc',
+    'sentboxview':'unblockreq',
+    'username':a,
+    'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function( data )
+       {
+alert(data.result);
+       },
+       error:function(data){
+         alert('error');
+       }
+  });
+}
+<!-- block user -->
+function blockuser(a){
+  $.ajax({
+  url:'{% url 'biodatachatstodo'  %}',
+  type:'POST',
+  dataType: 'json',
+  data:{
+    'msgfromusername':'abc',
+    'sentboxview':'blockreq',
+    'username':a,
+    'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function( data )
+       {
+alert(data.result);
+       },
+       error:function(data){
+         alert('error');
+       }
+  });
+}
+
 
 <!-- scroll button added -->
 

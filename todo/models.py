@@ -249,3 +249,21 @@ class BiodataHelp(models.Model):
     contact_number = models.CharField(max_length=100,default="")
     subject=models.CharField(max_length=100,default="")
     query = models.TextField(blank=True)
+class RequestsForApproval(models.Model):
+    class ContactView(models.TextChoices):
+        yes='yes'
+        no='no'
+        Not_Specified='Not_Specified'
+    class RequestType(models.TextChoices):
+        contact='contact'
+        connect='connect'
+        Not_Specified='Not_Specified'
+    user = models.ForeignKey(User,on_delete=models.CASCADE,null=True)
+    userbiodataid = models.CharField(max_length=200,null=True)
+    requestfromusername = models.CharField(max_length=200,blank=True)
+    requesttousername = models.CharField(max_length=200,blank=True)
+    requesttoemailid=models.CharField(max_length=200,blank=True)
+    request_type = models.CharField(choices=RequestType.choices,max_length=20,default=RequestType.Not_Specified)
+    contact_view_request = models.CharField(choices=ContactView.choices,max_length=20,default=ContactView.Not_Specified)
+    connect_request = models.CharField(choices=ContactView.choices,max_length=20,default=ContactView.Not_Specified)
+    created = models.DateTimeField(auto_now_add=True)

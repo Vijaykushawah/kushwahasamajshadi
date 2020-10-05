@@ -131,11 +131,15 @@
               </li>
 
               <li>
-                  <a class="nav-link" href="#">CHATS({{chats|length}})</a>
+                  <a class="nav-link" onclick="chatsentbox()" href="#">CHATS({{chats|length}})</a>
+              </li>
+              <li>
+                  <a onclick="pendingrequests()" class="nav-link" href="#">ALL REQUESTS({{reqapproval|length}})</a>
               </li>
               <li>
                   <a class="nav-link" href="{% url 'mybiodatahometodo' %}">SEARCH PARTNER</a>
               </li>
+
               <li>
                   <a class="nav-link" href="{% url 'biodatahelptodo' %}">HELP</a>
               </li>
@@ -174,7 +178,11 @@
     {% if todo.msg %}
     -{{todo.msg}}
     {% endif %}
+        <button class="btn btn-outline-secondary  bg-danger "><a onclick="blockuser('{{todo.user.username}}');" style="text-decoration:none;color:#ffffff;" href="#">BLOCK</a></button>
+<button class="btn btn-outline-secondary  bg-success "><a onclick="unblockuser('{{todo.user.username}}');" style="text-decoration:none;color:#ffffff;" href="#">UNBLOCK</a></button>
     </li>
+
+
     {% endifchanged %}
     {% endfor %}
     </ol>
@@ -183,6 +191,8 @@
 </div>
 <div id="rightinbox" ></div>
 <div id="chathome"></div>
+<div id="rightsentbox"></div>
+<div id="rightsentboxspecificuser"></div>
 
 </div></div>
 {% endblock %}

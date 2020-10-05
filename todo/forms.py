@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import Todo,Contact,MyProfile,SendMultiMail,MyBiodata,BiodataPrivacy,BiodataHelp
+from .models import Todo,Contact,MyProfile,SendMultiMail,MyBiodata,BiodataPrivacy,BiodataHelp,RequestsForApproval
 
 
 class TodoForm(ModelForm):
@@ -43,4 +43,8 @@ class BiodataPrivacyForm(ModelForm):
 class BiodataHelpForm(ModelForm):
     class Meta:
         model=BiodataHelp
+        fields = '__all__'
+class RequestsForApprovalForm(ModelForm):
+    class Meta:
+        model=RequestsForApproval
         fields = '__all__'
