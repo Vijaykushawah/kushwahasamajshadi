@@ -13,8 +13,9 @@
 
         <!-- Content -->
         <h5 class="font-weight-bold text-uppercase mb-4">Website</h5>
-        <p>Here you can create,view ,edit,delete biodata  for perfect match & can connect with them  .</p>
-        <p>All web pages present in this website are designed & developed from scratch and it's solely property of author.<a class="nav-link" href="{% url 'signupuser' %}">SIGNUP HERE!</a></p>
+        <p>Here you can create,view ,edit,download,delete biodata  for perfect match & can connect with them,We are
+          providing additinal features task management,language translator,password generator etc...
+        <a class="nav-link" href="{% url 'signupuser' %}">SIGNUP HERE!</a></p>
 
       </div>
       <!-- Grid column -->
@@ -124,8 +125,13 @@
   <!-- Footer Links -->
 <!-- marquee tag -->
 <marquee  behavior="alternate" direction="up" width="100%">
-	<marquee class="" width="100%" direction="right" behavior="alternate"><a href="">NOW IT IS YOUR TURN TO BE  HAPPILY MARRIED</a></marquee>
+	<marquee class="" width="100%" direction="right" behavior="alternate"><a href="{% url 'createbiodatatodo' %}">NOW IT IS YOUR TURN TO BE  HAPPILY MARRIED</a></marquee>
 </marquee>
+
+
+<div class="footer-copyright text-center text-white py-3">
+  PLEASE DO NOT USE/REPRODUCE CONTENT,FEATURES AVAILABLE ON THIS WEBSITE WITHOUT OUR CONSENT OTHERWISE THIS WILL LEAD TO ACTION SUBJECT TO PIRACY VIOLATION  AGAINST CONCERNED PERSONS.
+</div>
   <!-- Copyright -->
   <div class="footer-copyright text-center text-white py-3">© 2020 COPYRIGHT RESEREVED BY:
     <a class="nav-link" href="{% url 'abouttodo' %}"> VIJAY KUSHAWAH</a>
