@@ -109,7 +109,7 @@ $(document).ready(function(){
 
 $(document).ready(function(){
   $('.crossdata').click(function(){
-    alert('button clicked');
+
 
   $.ajax({
   url:'http://vijaykushawah.pythonanywhere.com/getdemo',
@@ -136,7 +136,7 @@ $(document).ready(function(){
   });
 });
 });
-<!-- view contact popup -->
+<!--raise view contact popup -->
 
 
 $(document).ready(function(){
@@ -149,6 +149,31 @@ $(document).ready(function(){
     dataType: 'json',
     data:{
       'biodataid':id,
+      'requesttype':'contact',
+      'csrfmiddlewaretoken': '{{ csrf_token }}'
+    },
+    success: function( data )
+         {
+           alert(data.msg);
+
+         }
+    });
+    alert('Please wait,We are processing your request...')
+  });
+});
+
+<!-- raise connect request -->
+$(document).ready(function(){
+  $('.connectrequest').click(function(){
+    var id=$(this).attr('id');
+
+    $.ajax({
+    url:'{% url 'viewcontacttodo'  %}',
+    type:'POST',
+    dataType: 'json',
+    data:{
+      'biodataid':id,
+      'requesttype':'connect',
       'csrfmiddlewaretoken': '{{ csrf_token }}'
     },
     success: function( data )
@@ -211,6 +236,7 @@ function chathome(){
   $('#right').hide();
   $('#rightinbox').hide();
   $('#rightsentbox').hide();
+  $('#rightsentboxspecificuser').hide();
   $('#chathome').show()
   $('#chathome').empty();
   $('#chathome').addClass('text-success col-8 ');
@@ -296,13 +322,14 @@ function chatsentbox(){
          $('#rightsentbox').innerHTML='';
          $('#rightsentbox').addClass('text-danger col-8 ');
          $('#rightsentbox').append('<ul class="list-group">');
-           $('#rightsentbox').append('<h5>Message Sents:</h5>');
+         $('#rightsentbox').append('');
+        var newmsg='<button class="btn btn-outline-secondary  bg-success "><a class="" onclick="startnewchat();"  style="text-decoration:none;color:#ffffff;" href="#">START NEW CHAT</a></button>';
+        $('#rightsentbox').append(newmsg+'<h5 class="font-weight-bold alert-success">Messages Sent:</h5>');
         for (var prop in data.msgs) {
         var msg =data.msgs[prop]['msg'];
            $('#rightsentbox').append('<li class="list-group-item text-dark list-group-item-action"><span class="text-info"><a onclick=sentboxspecificuserrdata("'+data.msgs[prop]['msgtousername']+'"); href="#">'+data.msgs[prop]['msgtousername']+'</a></span>:'+msg+'</li>');
         }
          $('#rightsentbox').append('</ul>');
-
 
 
 
@@ -313,9 +340,92 @@ function chatsentbox(){
        }
   });
 
+}
+<!-- start new chat -->
+function startnewchat(){
+
+  $.ajax({
+  url:'{% url 'biodatachatstodo'  %}',
+  type:'POST',
+  dataType: 'json',
+  data:{
+    'sentboxview':'getmychatusers',
+    'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function( data )
+       {
+         $('#right').hide();
+         $('#rightinbox').hide();
+         $('#chathome').hide();
+         $('#rightsentbox').hide();
+         $('#rightsentboxspecificuser').empty();
+         $('#rightsentboxspecificuser').show();
+         $('#rightsentboxspecificuser').innerHTML='';
+         $('#rightsentboxspecificuser').addClass('text-danger col-8 ');
+         $('#rightsentboxspecificuser').append('<h4 class="text-primary">SELECT USER</h4>');
+
+          var select = document.createElement("select");
+          select.name = "myusers";
+          select.id = "myusers";
+          select.class = "myusers";
+         for (var prop in data.msgs) {
+           var option = document.createElement("option");
+         var requesttousername =data.msgs[prop]['requesttousername'];
+         var requesttobiodataid =data.msgs[prop]['requesttobiodataid'];
+         option.value =requesttobiodataid ;
+         option.text=requesttousername;
+         select.appendChild(option);
+
+
+       }
+       $('#rightsentboxspecificuser').append('<form method="POST" action="#">{% csrf_token %}');
+        $('#rightsentboxspecificuser').append(select);
+        $('#rightsentboxspecificuser').append('<h5 class="text-info">Type Your Message</h5>');
+         var form='<textarea name="mymsg" id="mymsg" rows="8" cols="80"></textarea>"<td><button type="submit" onclick="sendmsg1()"; class="btn btn-success sendmsg">SEND</button></td></form>';
+         $('#rightsentboxspecificuser').append(form);
+
+
+
+       },
+       error:function(data){
+         alert('error');
+       }
+  });
+
+}
+
+<!-- send msg -->
+function sendmsg1(){
+  var tobiodataid = $("select#myusers").val();
+  var msg=$('textarea#mymsg').val();
+
+  $.ajax({
+  url:'{% url 'biodatachatstodo'  %}',
+  type:'POST',
+  dataType: 'json',
+  data:{
+    'sentboxview':'sendmymsg',
+    'tobiodataid':tobiodataid,
+    'msg':msg,
+    'csrfmiddlewaretoken': '{{ csrf_token }}'
+  },
+  success: function( data )
+       {
+
+alert(data.result);
+location.reload();
+
+       },
+       error:function(data){
+         alert('error');
+       }
+  });
 
 
 }
+
+
+
 <!-- chatoutbox specific user data -->
 
 function sentboxspecificuserrdata(a){
@@ -397,20 +507,25 @@ function pendingrequests(){
          $('#rightsentboxspecificuser').addClass('text-danger col-8 ');
 
          $('#rightsentboxspecificuser').append('<ul class="list-group">');
-           $('#rightsentboxspecificuser').append('<h5> REQUESTS : </h5>');
+           $('#rightsentboxspecificuser').append('<h5> PERMISSIONS : </h5>Note-Once a user is deleted then you can not reset permission for that user.');
 for (var prop in data.msgs) {
   var contreq =data.msgs[prop]['contact_view_request'];
   var biodataid =data.msgs[prop]['biodataid'];
   var conreq =data.msgs[prop]['connect_request'];
   var rowid =data.msgs[prop]['rowid'];
   var reqtype=data.msgs[prop]['request_type'];
-  var passed =rowid+"@@"+reqtype+"@@"+"approve";
+  var reqtypid=1;
+  var reqmsg ="wants to<bold><mark> VIEW YOUR CONTACT NUMBER</mark> </bold>";
+  if (reqtype == 'connect'){
+    reqtypid=2
+    reqmsg="wants to<bold><mark> CONNECT WITH YOU ON CHAT</mark> </bold>";
+  }
 
 
-           $('#rightsentboxspecificuser').append('<li class="list-group-item text-dark list-group-item-action"><span class="text-info">User'+data.msgs[prop]['request_from']+'</span>: wants to '+reqtype+' with you whose biodata id is-<mark>'+biodataid+'</mark> Kindly check requested user profile and approve request.</li><button class="btn btn-outline-secondary  bg-success "><a class="approve" onclick="approverequest('+rowid+');"  style="text-decoration:none;color:#ffffff;" href="#">APPROVE</a></button>');
+$('#rightsentboxspecificuser').append('<li class="list-group-item text-dark list-group-item-action"><span class="text-info">User'+data.msgs[prop]['request_from']+'</span>: '+reqmsg+' whose biodata id is-<mark>'+biodataid+'</mark> Kindly check requested user profile and approve request.</li><button class="btn btn-outline-secondary  bg-success "><a class="approve" onclick="approverequest('+rowid+','+reqtypid+');"  style="text-decoration:none;color:#ffffff;" href="#">GRANT</a></button>');
 
-$('#rightsentboxspecificuser').append('<button class="btn btn-outline-secondary  bg-danger "><a onclick="rejectequest('+rowid+');" style="text-decoration:none;color:#ffffff;" href="#">REJECT</a></button>');
-$('#rightsentboxspecificuser').append('<button class="btn btn-outline-secondary  bg-danger "><a onclick="deleterequest('+rowid+');" style="text-decoration:none;color:#ffffff;" href="#">DELETE</a></button>');                         }
+$('#rightsentboxspecificuser').append('<button class="btn btn-outline-secondary  bg-danger "><a onclick="rejectequest('+rowid+','+reqtypid+');" style="text-decoration:none;color:#ffffff;" href="#">REVOKE</a></button>');
+$('#rightsentboxspecificuser').append('<button class="btn btn-outline-secondary  bg-danger "><a onclick="deleterequest('+rowid+','+reqtypid+');" style="text-decoration:none;color:#ffffff;" href="#">DELETE</a></button>');                         }
          $('#rightsentboxspecificuser').append('</ul>');
 
 
@@ -423,8 +538,7 @@ $('#rightsentboxspecificuser').append('<button class="btn btn-outline-secondary 
 }
 <!-- approve request -->
 
-function approverequest(rid){
-
+function approverequest(rid,b){
   $.ajax({
   url:'{% url 'biodatachatstodo'  %}',
   type:'POST',
@@ -433,11 +547,13 @@ function approverequest(rid){
     'msgfromusername':'abc',
     'sentboxview':'approvereq',
     'rowid':rid,
+    'reqtype':b,
     'csrfmiddlewaretoken': '{{ csrf_token }}'
   },
   success: function( data )
        {
 alert(data.result);
+location.reload();
        },
        error:function(data){
          alert('error');
@@ -452,7 +568,7 @@ alert(data.result);
 
 <!-- reject request -->
 
-function rejectequest(rid){
+function rejectequest(rid,b){
 
   $.ajax({
   url:'{% url 'biodatachatstodo'  %}',
@@ -462,12 +578,13 @@ function rejectequest(rid){
     'msgfromusername':'abc',
     'sentboxview':'rejectreq',
     'rowid':rid,
+    'reqtype':b,
     'csrfmiddlewaretoken': '{{ csrf_token }}'
   },
   success: function( data )
        {
       alert(data.result);
-
+location.reload();
 
        },
        error:function(data){
@@ -479,7 +596,7 @@ function rejectequest(rid){
 
 
 <!-- delete request -->
-function deleterequest(rid){
+function deleterequest(rid,b){
 
   $.ajax({
   url:'{% url 'biodatachatstodo'  %}',
@@ -489,11 +606,13 @@ function deleterequest(rid){
     'msgfromusername':'abc',
     'sentboxview':'deletereq',
     'rowid':rid,
+    'reqtype':b,
     'csrfmiddlewaretoken': '{{ csrf_token }}'
   },
   success: function( data )
        {
 alert(data.result);
+location.reload();
        },
        error:function(data){
          alert('error');
@@ -503,20 +622,21 @@ alert(data.result);
 }
 
 <!-- unblock user -->
-function unblockuser(a){
+function unblockuser(a,b){
   $.ajax({
   url:'{% url 'biodatachatstodo'  %}',
   type:'POST',
   dataType: 'json',
   data:{
-    'msgfromusername':'abc',
+    'msgfromusername':a,
     'sentboxview':'unblockreq',
-    'username':a,
+    'biodataid':b,
     'csrfmiddlewaretoken': '{{ csrf_token }}'
   },
   success: function( data )
        {
 alert(data.result);
+location.reload();
        },
        error:function(data){
          alert('error');
@@ -524,20 +644,21 @@ alert(data.result);
   });
 }
 <!-- block user -->
-function blockuser(a){
+function blockuser(a,b){
   $.ajax({
   url:'{% url 'biodatachatstodo'  %}',
   type:'POST',
   dataType: 'json',
   data:{
-    'msgfromusername':'abc',
+    'msgfromusername':a,
     'sentboxview':'blockreq',
-    'username':a,
+    'biodataid':b,
     'csrfmiddlewaretoken': '{{ csrf_token }}'
   },
   success: function( data )
        {
 alert(data.result);
+location.reload();
        },
        error:function(data){
          alert('error');

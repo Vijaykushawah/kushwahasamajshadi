@@ -464,8 +464,8 @@ def sendmailtodo(request):
             passw=request.POST['pass']
             msg['From']=request.POST['from']
         else:
-            msg['From']='stickymemonoreply@gmail.com'
-            passw="Sticky@#123"
+            msg['From']='kushwahasamajshadi@gmail.com'
+            passw="Ksamaj@#123"
         msg['Subject']=request.POST['subject']
         body=request.POST['body']
         msg.attach(MIMEText(body, 'plain'))
@@ -654,39 +654,65 @@ def mybiodatadownloadtodo(request):
 @login_required
 def viewcontacttodo(request):
     try:
-        todo=get_object_or_404(MyBiodata,pk=request.POST['biodataid'],deletedrow=False)
-        todos=get_list_or_404(RequestsForApproval,user=request.user,contact_view_request='yes',requesttoemailid=todo.email_ID)
-        result="CONTACT NUMBER: {}".format(todo.contact_number)
+        requestto=get_object_or_404(MyBiodata,pk=request.POST['biodataid'],deletedrow=False)
+        if request.POST['requesttype'] == 'contact':
+            todos=get_list_or_404(RequestsForApproval,user=request.user,contact_view_request='yes',requesttobiodataid=requestto.id)
+            result="CONTACT NUMBER: {}".format(requestto.contact_number)
+        else:
+            todos=get_list_or_404(RequestsForApproval,user=request.user,connect_request='yes',requesttobiodataid=requestto.id)
+            result="YOU ARE ALREADY CONNECTED TO: {}".format(requestto.user.username)
         return JsonResponse({'msg':result})
     except:
         try:
-            todo1=get_list_or_404(RequestsForApproval,user=request.user,requesttoemailid=todo.email_ID)
-            result="YOU HAVE ALREADY RAISED REQUEST TO : {},PLEASE WAIT FOR APPROVAL ".format(todo.todo.email_ID)
+            if request.POST['requesttype'] == 'contact':
+                todo1=get_list_or_404(RequestsForApproval,user=request.user,requesttobiodataid=requestto.id,request_type='contact')
+                result="YOU HAVE ALREADY RAISED REQUEST TO : {} ,PLEASE WAIT FOR APPROVAL ".format(requestto.user.username)
+            else:
+                todo1=get_list_or_404(RequestsForApproval,user=request.user,requesttobiodataid=requestto.id,request_type='connect')
+                result="YOU HAVE ALREADY RAISED REQUEST TO : {} ,PLEASE WAIT FOR APPROVAL ".format(requestto.user.username)
             return JsonResponse({'msg':result})
         except:
             logger.error('raise new view req')
         try:
+            try:
+                requesfrom=get_list_or_404(MyBiodata,user=request.user,deletedrow=False)
+                requefrombiodataid=requesfrom[0].id
+            except:
+                requesfrom=[]
+                requefrombiodataid=''
             requestmodel=RequestsForApproval()
             requestmodel.user=request.user
             requestmodel.requestfromusername=request.user.username
-            requestmodel.requesttousername=todo.user.username
-            requestmodel.requesttoemailid=todo.email_ID
-            requestmodel.userbiodataid=todo.id
-            requestmodel.request_type='contact'
+            requestmodel.userbiodataid=requefrombiodataid
+            requestmodel.requesttousername=requestto.user.username
+            requestmodel.requesttoemailid=requestto.email_ID
+            requestmodel.requesttobiodataid=requestto.id
+            if request.POST['requesttype'] == 'contact':
+                requestmodel.request_type='contact'
+            else:
+                requestmodel.request_type='connect'
             requestmodel.save()
             msg = MIMEMultipart()
-            msg['From'] = 'stickymemonoreply@gmail.com'
-            msg['To'] = todo.email_ID
-            msg['Subject'] = " VIEW CONTACT REQUEST"
-            body = " {} : WANTS TO VIEW YOUR CONTACT DATA ON"
-            "KUSHWAHA SAMAJ SHADI WEBSITE,KINDLY CHECK YOUR NOTIFICATIONS AND SHARE DETAILS IF INTERESTED ".format(request.user.username)
+            msg['From'] = 'kushwahasamajshadi@gmail.com'
+            msg['To'] = requestto.email_ID
+            logger.error(requestto.email_ID)
+            if request.POST['requesttype'] == 'contact':
+                msg['Subject'] = " VIEW CONTACT REQUEST"
+                body = " {} : WANTS TO VIEW YOUR CONTACT NUMBER ON KUSHWAHA SAMAJ SHADI WEBSITE,KINDLY CHECK YOUR NOTIFICATIONS AND SHARE DETAILS IF INTERESTED ".format(request.user.username)
+            else:
+                msg['Subject'] = " CONNECT REQUEST"
+                body = " {} : WANTS TO   CONTECT YOU ON KUSHWAHA SAMAJ SHADI WEBSITE,KINDLY CHECK YOUR NOTIFICATIONS AND ACCEPT REQUEST IF INTERESTED ".format(request.user.username)
             msg.attach(MIMEText(body, 'plain'))
-            s = smtplib.SMTP('smtp.gmail.com', 587)
-            s.starttls()
-            s.login(msg['From'], "Sticky@#123")
-            text = msg.as_string()
-            s.sendmail(msg['From'], msg['To'], text)
-            s.quit()
+            try:
+                s = smtplib.SMTP('smtp.gmail.com', 587)
+                s.starttls()
+                s.login(msg['From'], "Ksamaj@#123")
+                text = msg.as_string()
+                s.sendmail(msg['From'], msg['To'], text)
+                s.quit()
+            except:
+                result='YOUR VIEW CONTACT REQUEST RAISED  '
+            logger.error('not error ttls')
             result='YOUR VIEW CONTACT REQUEST RAISED AND HAVE SENT MAIL TO USER '
         except:
             result='SORRY,SELECTED BIODATA USER HAS NOT UPLOADED EMAIL ID'
@@ -752,11 +778,53 @@ def biodatachatstodo(request):
                     mydict[row.id]=localdict
                 logger.error(mydict)
                 return JsonResponse({'result':'success','msgs':mydict})
+            elif request.POST['sentboxview'] == 'getmychatusers':
+                try:
+                    myusers=get_list_or_404(RequestsForApproval,user=request.user,request_type='connect',connect_request='yes')
+                except:
+                    myusers=[]
+                mydict={}
+                for row in myusers:
+                    localdict={}
+                    localdict['request_from']=row.user.username
+                    localdict['requesttousername']=row.requesttousername
+                    localdict['requesttobiodataid']=row.requesttobiodataid
+                    localdict['requesttoemailid']=row.requesttoemailid
+                    localdict['biodataid']=row.userbiodataid
+                    localdict['rowid']=row.id
+                    mydict[row.requesttousername]=localdict
+                logger.error(mydict)
+                return JsonResponse({'result':'success','msgs':mydict})
+            elif request.POST['sentboxview'] == 'sendmymsg':
+                try:
+                    myusers=get_list_or_404(RequestsForApproval,user=request.user,request_type='connect',connect_request='yes',requesttobiodataid=request.POST['tobiodataid'])
+                    touser = get_object_or_404(MyBiodata,pk=request.POST['tobiodataid'])
+                    sentbox=MyBiodataChatbox()
+                    sentbox.user=request.user
+                    sentbox.msgtousername=touser.user.username
+                    sentbox.msg=request.POST['msg']
+                    sentbox.save()
+                    toinbox=MyBiodataInbox()
+                    toinbox.user=touser.user
+                    toinbox.mybiodataid=touser.id
+                    toinbox.msgfromusername=request.user.username
+                    toinbox.msg=request.POST['msg']
+                    toinbox.save()
+                    return JsonResponse({'result':'MESSAGE HAS BEEN SENT SUCCESSFULLY.'})
+
+                except:
+                    return JsonResponse({'result':'SORRY,YOU ARE NOT AUTHORIZED TO SEND MESSAGE TO SELECTED USER'})
+
+                return JsonResponse({'result':'success'})
             elif request.POST['sentboxview'] == 'approvereq':
                 logger.error('app requests')
                 try:
                     reqapproval=get_object_or_404(RequestsForApproval,pk=request.POST['rowid'])
-                    reqapproval.contact_view_request='yes'
+                    logger.error(request.POST['reqtype'])
+                    if request.POST['reqtype'] == 1:
+                        reqapproval.contact_view_request='yes'
+                    else:
+                        reqapproval.connect_request='yes'
                     reqapproval.save()
                     return JsonResponse({'result':'REQUEST APPROVED SUCCESSFULLY'})
                 except:
@@ -765,7 +833,10 @@ def biodatachatstodo(request):
                 logger.error('rej requests')
                 try:
                     reqapproval=get_object_or_404(RequestsForApproval,pk=request.POST['rowid'])
-                    reqapproval.contact_view_request='no'
+                    if request.POST['reqtype'] == 1:
+                        reqapproval.contact_view_request='no'
+                    else:
+                        reqapproval.connect_request='no'
                     reqapproval.save()
                     return JsonResponse({'result':'REQUEST REJECTED FOR NOW!'})
                 except:
@@ -781,18 +852,19 @@ def biodatachatstodo(request):
             elif request.POST['sentboxview'] == 'unblockreq':
                 logger.error('unblock requests')
                 try:
-                    reqapproval=get_object_or_404(RequestsForApproval,requesttousername=request.user.username)
-                    reqapproval.connect_request='yes'
-                    reqapproval.save()
+                    reqapproval=get_list_or_404(RequestsForApproval,requesttobiodataid=request.POST['biodataid'],requesttousername=request.user.username,requestfromusername=request.POST['msgfromusername'])
+                    for row in reqapproval:
+                        row.connect_request='yes'
+                        row.save()
                     return JsonResponse({'result':'USER HAS BEEN UNBLOCKED'})
                 except:
                     return JsonResponse({'result':'BAD DATA PASSED, PLEASE TRY AGAIN!'})
             elif request.POST['sentboxview'] == 'blockreq':
-                logger.error('block requests')
                 try:
-                    reqapproval=get_object_or_404(RequestsForApproval,requesttousername=request.user.username)
-                    reqapproval.connect_request='no'
-                    reqapproval.save()
+                    reqapproval=get_list_or_404(RequestsForApproval,requesttobiodataid=request.POST['biodataid'],requesttousername=request.user.username,requestfromusername=request.POST['msgfromusername'])
+                    for row in reqapproval:
+                        row.connect_request='no'
+                        row.save()
                     return JsonResponse({'result':'USER HAS BEEN BLOCKED SUCCESSFULLY'})
                 except:
                     return JsonResponse({'result':'BAD DATA PASSED, PLEASE TRY AGAIN!'})
@@ -842,27 +914,27 @@ def biodatahelptodo(request):
             form.save()
             try:
                 msg = MIMEMultipart()
-                msg['From'] = 'stickymemonoreply@gmail.com'
+                msg['From'] = 'kushwahasamajshadi@gmail.com'
                 msg['To'] = 'rohitkushwah9527@gmail.com'
                 msg['Subject'] = request.POST['subject']
                 body = "{} & contact number {} & emailid {}".format(request.POST['query'],request.POST['contact_number'],request.POST['email_id'])
                 msg.attach(MIMEText(body, 'plain'))
                 s = smtplib.SMTP('smtp.gmail.com', 587)
                 s.starttls()
-                s.login(msg['From'], "Sticky@#123")
+                s.login(msg['From'], "Ksamaj@#123")
                 text = msg.as_string()
                 s.sendmail(msg['From'], msg['To'], text)
                 s.quit()
 
                 msg = MIMEMultipart()
-                msg['From'] = 'stickymemonoreply@gmail.com'
+                msg['From'] = 'kushwahasamajshadi@gmail.com'
                 msg['To'] = request.POST['email_id']
                 msg['Subject'] = request.POST['subject']
                 body = "You send us this query {}  .We will help you on priority Thanks".format(request.POST['query'])
                 msg.attach(MIMEText(body, 'plain'))
                 s = smtplib.SMTP('smtp.gmail.com', 587)
                 s.starttls()
-                s.login(msg['From'], "Sticky@#123")
+                s.login(msg['From'], "Ksamaj@#123")
                 text = msg.as_string()
                 s.sendmail(msg['From'], msg['To'], text)
                 s.quit()

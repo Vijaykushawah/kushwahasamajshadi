@@ -233,6 +233,7 @@ class MyBiodata(models.Model):
 
 class MyBiodataInbox(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE,null=True)
+    mybiodataid=models.CharField(max_length=200,blank=True)
     msgfromusername = models.CharField(max_length=200,blank=True)
     subject = models.CharField(max_length=200,null=True)
     msg =  models.TextField(null=True)
@@ -262,6 +263,7 @@ class RequestsForApproval(models.Model):
     userbiodataid = models.CharField(max_length=200,null=True)
     requestfromusername = models.CharField(max_length=200,blank=True)
     requesttousername = models.CharField(max_length=200,blank=True)
+    requesttobiodataid = models.CharField(max_length=200,null=True)
     requesttoemailid=models.CharField(max_length=200,blank=True)
     request_type = models.CharField(choices=RequestType.choices,max_length=20,default=RequestType.Not_Specified)
     contact_view_request = models.CharField(choices=ContactView.choices,max_length=20,default=ContactView.Not_Specified)
