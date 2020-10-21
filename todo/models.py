@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django import forms
 from django.core.validators import MaxValueValidator, MinValueValidator
 import datetime
+from django_resized import ResizedImageField
 from django.utils.translation import gettext_lazy as _
 # Create your models here.
 
@@ -67,7 +68,7 @@ class BiodataPrivacy(models.Model):
 class MyBiodata(models.Model):
     class Marital(models.TextChoices):
         married='married'
-        Not_married='Not_married'
+        Never_married='Never_married'
         Not_Specified='Not_Specified'
     class Disabiliti(models.TextChoices):
         Yes='Yes'
@@ -102,6 +103,7 @@ class MyBiodata(models.Model):
         Business_Man ='Business_Man'
         Engineer='Engineer'
         Doctor='Doctor'
+        Lawyer='Lawyer'
         others='others'
         Not_Specified='Not_Specified'
     class Religion(models.TextChoices):
@@ -187,38 +189,38 @@ class MyBiodata(models.Model):
     username = models.CharField(max_length=100,blank=True)
     name = models.CharField(max_length=100,default="")
     age = models.PositiveIntegerField(default=22, validators=[MinValueValidator(18), MaxValueValidator(100)])
-    created_by = models.CharField(choices=CreatedBy.choices,max_length=20,default=CreatedBy.Not_Specified)
-    marital_Status = models.CharField(choices=Marital.choices,max_length=20,default=Marital.Not_Specified)
+    created_by = models.CharField(choices=CreatedBy.choices,max_length=20,default=CreatedBy.Others)
+    marital_Status = models.CharField(choices=Marital.choices,max_length=20,default=Marital.Never_married)
     gender = models.CharField(choices=Gender.choices,max_length=20,default=Gender.Not_Specified)
     hobbies = models.CharField(max_length=400,blank=True)
     mother_Toung = models.CharField(choices=MotherToung.choices,max_length=20,default=MotherToung.Hindi)
     social = models.CharField(choices=Social.choices,max_length=20,default=Social.Religious_Background)
     body_Type = models.CharField(choices=BodyType.choices,max_length=20,default=BodyType.Average)
-    cast = models.CharField(choices=Cast.choices,max_length=20,default=Cast.Not_Specified)
-    manglik = models.CharField(choices=Manglik.choices,max_length=20,default=Manglik.Not_Specified)
+    cast = models.CharField(choices=Cast.choices,max_length=20,default=Cast.Kushwaha)
+    manglik = models.CharField(choices=Manglik.choices,max_length=20,default=Manglik.No)
     height = models.CharField(max_length=100,blank=True)
-    physical_disability = models.CharField(choices=Disabiliti.choices,max_length=20,default=Disabiliti.Not_Specified)
+    physical_disability = models.CharField(choices=Disabiliti.choices,max_length=20,default=Disabiliti.No)
     body_Weight=models.IntegerField(default=60)
     complexion = models.CharField(choices=Complexion.choices,max_length=20,default=Complexion.Fair)
-    DOB = models.DateField(default=datetime.date.today)
-    place = models.CharField(max_length=50,blank=True)
+    DOB = models.CharField(max_length=100,blank=True)
+    place = models.CharField(max_length=500,blank=True)
     religion = models.CharField(choices=Religion.choices,max_length=20,default=Religion.Hindu)
     diet =  models.CharField(choices=Diet.choices,max_length=20,default=Diet.Vegitarian)
     contact_number = models.CharField(max_length=50,blank=True)
     email_ID = models.CharField(max_length=100,blank=True)
-    contact_privacy = models.CharField(choices=Contact.choices,max_length=20,default=Contact.Not_Specified)
+    contact_privacy = models.CharField(choices=Contact.choices,max_length=20,default=Contact.Visible_To_All)
     father_name = models.CharField(max_length=100,default="")
     father_occupation = models.CharField(choices=Profession.choices,max_length=20,default=Profession.Not_Specified)
     mother_name = models.CharField(max_length=100,default="")
     mother_occupation = models.CharField(choices=MotherOccupation.choices,max_length=20,default=MotherOccupation.House_wife)
     family_details = models.CharField(max_length=500,blank=True)
-    education = models.CharField(max_length=100,blank=True)
+    education = models.CharField(max_length=500,blank=True)
     profession = models.CharField(choices=Profession.choices,max_length=20,default=Profession.Not_Specified)
     profession_type = models.CharField(choices=ProfessionType.choices,max_length=20,default=ProfessionType.Not_Specified)
-    job_location = models.CharField(max_length=50,blank=True)
-    annual_Income = models.CharField(max_length=50,blank=True)
+    job_location = models.CharField(max_length=500,blank=True)
+    annual_Income = models.CharField(max_length=100,blank=True)
     about = models.CharField(max_length=500,blank=True)
-    photo=models.ImageField(upload_to='todo/images/',default='default.jpg')
+    photo=ResizedImageField(size=[400, 360],quality=100,upload_to='todo/images/',default='default.jpg')
     created_at = models.DateTimeField(auto_now_add=True)
     last_updated_at = models.DateTimeField(null=True)
     deletedrow=models.BooleanField(default=False)

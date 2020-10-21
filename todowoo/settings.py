@@ -25,7 +25,7 @@ SECRET_KEY = '7n9vdxz36@6e@0u7s^sbcdrani18eq@4y+jb_$9zf&*ij&)+cm'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['kushwahasamajshadi.pythonanywhere.com']
 
 
 # Application definition
@@ -127,6 +127,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT=  BASE_DIR / 'static'
 LOGIN_URL='/login'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
@@ -135,7 +136,7 @@ AUTHENTICATION_BACKENDS = (
  'django.contrib.auth.backends.ModelBackend',
  'allauth.account.auth_backends.AuthenticationBackend',
  )
-SITE_ID = 2
+SITE_ID = 3
 LOGIN_REDIRECT_URL = '/'
 SOCIALACCOUNT_PROVIDERS = {
     'google': {

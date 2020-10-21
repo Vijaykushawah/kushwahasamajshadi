@@ -108,6 +108,7 @@ $(document).ready(function(){
 
 
 $(document).ready(function(){
+
   $('.crossdata').click(function(){
 
 
@@ -230,6 +231,7 @@ $(document).ready(function () {
 
 });
 
+
 <!-- inboxselecteduser -->
 
 function chathome(){
@@ -240,13 +242,13 @@ function chathome(){
   $('#chathome').show()
   $('#chathome').empty();
   $('#chathome').addClass('text-success col-8 ');
-  var body = '<div><h5 class="text-danger">HELLO WELCOME,HERE YOU CAN DO SOCIAL INTERACTION WITH OTHERS.</h5></div>';
+  var body = '<div><br><br><h5 class="text-danger"><mark>HELLO WELCOME,HERE YOU CAN DO SOCIAL INTERACTION WITH OTHERS.</mark</h5></div>';
   $('#chathome').append(body);
   var body2='<div>Please note down biodata id for which user you want to chat from biodata home page.After forward you can send them request to connect.Once user accepts your request then you can do messages them related to your queries.   </div>';
   $('#chathome').append(body2);
   var body3 = '<br><br>In case any problem You can  contact us  on various given plateforms. Our vision is to provide plateform for entire community .We have seen there are multiple plateforms available but this is open to all free of cost';
   $('#chathome').append(body3);
-  var body4='<br><br><img style="border-radius: 10%" width="70%" height="50%" src="{% static 'todo/images/chathome.png' %}">';
+  var body4='<br><br><img style="border-radius: 10%" width="100%"  src="{% static 'todo/images/chathome.png' %}"><br>';
   $('#chathome').append(body4);
 }
 
@@ -276,7 +278,7 @@ function jsfunction(a){
          $('#rightinbox').show();
          $('#rightinbox').addClass('text-danger col-8 ');
          $('#rightinbox').append('<ul class="list-group">');
-           $('#rightinbox').append('<h5>Message Recieved From<a href="#"> '+data.result+'<a> </h5>');
+           $('#rightinbox').append('<h5><br><br><mark>MESSAGES RECEIVED FROM</mark><a href="#"> '+data.result+'<a> </h5>');
 for (var prop in data.msgs) {
   var msg =data.msgs[prop]['msg'];
            $('#rightinbox').append('<li class="list-group-item text-dark list-group-item-action"><span class="text-info">'+data.msgs[prop]['msgfromusername']+'</span>:'+msg+'</li>');
@@ -322,9 +324,9 @@ function chatsentbox(){
          $('#rightsentbox').innerHTML='';
          $('#rightsentbox').addClass('text-danger col-8 ');
          $('#rightsentbox').append('<ul class="list-group">');
-         $('#rightsentbox').append('');
-        var newmsg='<button class="btn btn-outline-secondary  bg-success "><a class="" onclick="startnewchat();"  style="text-decoration:none;color:#ffffff;" href="#">START NEW CHAT</a></button>';
-        $('#rightsentbox').append(newmsg+'<h5 class="font-weight-bold alert-success">Messages Sent:</h5>');
+         $('#rightsentbox').append('<br><br>');
+        var newmsg='<center><button class="btn btn-outline-secondary  bg-success "><a class="" onclick="startnewchat();"  style="text-decoration:none;color:#ffffff;" href="#">START NEW CHAT</a></button></center>';
+        $('#rightsentbox').append(newmsg+'<h5 class="font-weight-bold alert-danger"><mark>MY OUTBOX:</mark></h5><br>');
         for (var prop in data.msgs) {
         var msg =data.msgs[prop]['msg'];
            $('#rightsentbox').append('<li class="list-group-item text-dark list-group-item-action"><span class="text-info"><a onclick=sentboxspecificuserrdata("'+data.msgs[prop]['msgtousername']+'"); href="#">'+data.msgs[prop]['msgtousername']+'</a></span>:'+msg+'</li>');
@@ -362,7 +364,7 @@ function startnewchat(){
          $('#rightsentboxspecificuser').show();
          $('#rightsentboxspecificuser').innerHTML='';
          $('#rightsentboxspecificuser').addClass('text-danger col-8 ');
-         $('#rightsentboxspecificuser').append('<h4 class="text-primary">SELECT USER</h4>');
+         $('#rightsentboxspecificuser').append('<br><br><h4 class="text-primary"><mark>SELECT USER</mark><br></h4>');
 
           var select = document.createElement("select");
           select.name = "myusers";
@@ -380,7 +382,7 @@ function startnewchat(){
        }
        $('#rightsentboxspecificuser').append('<form method="POST" action="#">{% csrf_token %}');
         $('#rightsentboxspecificuser').append(select);
-        $('#rightsentboxspecificuser').append('<h5 class="text-info">Type Your Message</h5>');
+        $('#rightsentboxspecificuser').append('<h5 class="text-info">TYPE YOUR MESSAGE</h5>');
          var form='<textarea name="mymsg" id="mymsg" rows="8" cols="80"></textarea>"<td><button type="submit" onclick="sendmsg1()"; class="btn btn-success sendmsg">SEND</button></td></form>';
          $('#rightsentboxspecificuser').append(form);
 
@@ -458,7 +460,7 @@ function sentboxspecificuserrdata(a){
            $('#rightsentboxspecificuser').addClass('text-danger col-8 ');
 
            $('#rightsentboxspecificuser').append('<ul class="list-group">');
-             $('#rightsentboxspecificuser').append('<h5>Messages sent to <a href="#"> '+data.result+'<a>: </h5>');
+             $('#rightsentboxspecificuser').append('<h5><br><br><mark>MESSAGE SENT TO</mark> <a href="#"> '+data.result+'<a>: </h5>');
   for (var prop in data.msgs) {
     var msg =data.msgs[prop]['msg'];
              $('#rightsentboxspecificuser').append('<li class="list-group-item text-dark list-group-item-action"><span class="text-info">'+data.msgs[prop]['msgfromusername']+'</span>:'+msg+'</li>');
@@ -507,7 +509,7 @@ function pendingrequests(){
          $('#rightsentboxspecificuser').addClass('text-danger col-8 ');
 
          $('#rightsentboxspecificuser').append('<ul class="list-group">');
-           $('#rightsentboxspecificuser').append('<h5> PERMISSIONS : </h5>Note-Once a user is deleted then you can not reset permission for that user.');
+           $('#rightsentboxspecificuser').append('<h5><br><br> <mark>PERMISSIONS :</mark> </h5>Note-Once a user is deleted then you can not reset permission for that user.');
 for (var prop in data.msgs) {
   var contreq =data.msgs[prop]['contact_view_request'];
   var biodataid =data.msgs[prop]['biodataid'];
@@ -671,6 +673,7 @@ location.reload();
 
 // When the user clicks on the button, scroll to the top of the document
 function topFunction() {
+
   document.body.scrollTop = 0;
   document.documentElement.scrollTop = 0;
 }

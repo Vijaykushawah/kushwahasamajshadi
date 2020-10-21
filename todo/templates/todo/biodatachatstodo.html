@@ -9,7 +9,7 @@
 
       <div class="row ">
 
-<div id="left" class="col-4">
+<div id="left" class="col-4 ">
 
 <style>
   .wrapper {
@@ -169,7 +169,7 @@
 
   <ol class="list-group">
 {% regroup inbox by id as todos %}
-<h5>MY INBOX({{inbox|length}})</h5>
+<h5><br><br><mark>MY INBOX({{inbox|length}})</mark></h5>
     {%  for todo in inbox %}
     {% ifchanged todo.msgfromusername %}
     <a onclick="jsfunction('{{todo.msgfromusername}}')"  href="#">

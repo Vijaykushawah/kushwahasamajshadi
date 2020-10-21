@@ -23,12 +23,12 @@ class SendMultiMailForm(ModelForm):
 class MyBiodataForm(ModelForm):
     class Meta:
         model=MyBiodata
-        fields = {'name','age','gender','height','body_Type','complexion','mother_Toung',
-        'social','religion','cast','manglik','hobbies','education','profession','profession_type','job_location','annual_Income',
+        fields = {'name','age','gender','height','body_Weight','body_Type','complexion','mother_Toung',
+        'social','religion','diet','cast','manglik','hobbies','education','profession','profession_type','job_location','annual_Income',
         'father_name','father_occupation','mother_name','mother_occupation','family_details','about',
         'contact_number','contact_privacy','email_ID','place','created_by','photo'}
-    field_order=['name','age','gender','height','body_Type','complexion','mother_Toung',
-        'social','religion','cast','manglik','hobbies','education','profession','profession_type','job_location','annual_Income',
+    field_order=['name','age','gender','height','body_Weight','body_Type','complexion','mother_Toung',
+        'social','religion','diet','cast','manglik','hobbies','education','profession','profession_type','job_location','annual_Income',
         'father_name','father_occupation','mother_name','mother_occupation','family_details','about',
         'contact_number','contact_privacy','email_ID','place','created_by','photo']
 
